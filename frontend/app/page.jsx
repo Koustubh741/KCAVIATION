@@ -107,7 +107,7 @@ export default function Home() {
         </Card>
 
         <Card className={styles.expensesCard}>
-          <h3 className={styles.cardTitle}>Insights & Alerts</h3>
+          <h3 className={styles.cardTitle}>Insights & Alert</h3>
           <div className={styles.expenseItem}>
             <span className={styles.expenseLabel}>60% Insights</span>
             <div className={styles.progressBar}>
