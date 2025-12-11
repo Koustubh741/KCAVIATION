@@ -1,0 +1,298 @@
+/* Dashboard Layout */
+.dashboard {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1f2e 50%, #0a1a20 100%);
+}
+
+/* Summary Cards */
+.summaryCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px !important;
+  background: rgba(20, 30, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.3) !important;
+}
+
+.statIcon {
+  font-size: 36px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.1));
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.statTrend {
+  display: flex;
+  align-items: center;
+}
+
+.trendUp {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trendNeutral {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trendDown {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Charts Section */
+.chartsSection {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+}
+
+.trendCard,
+.heatmapCard,
+.predictiveCard {
+  background: rgba(20, 30, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  backdrop-filter: blur(20px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.viewAllBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.viewAllBtn:hover {
+  color: #4ade80;
+}
+
+/* Trend Content */
+.trendContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.trendItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.trendLabel {
+  width: 140px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.trendBar {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.trendFill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.6s ease;
+  box-shadow: 0 0 15px rgba(79, 172, 254, 0.3);
+}
+
+.trendValue {
+  width: 50px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+/* Predictive Analytics */
+.predictiveContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.predictionItem {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(15, 25, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.predictionItem:hover {
+  background: rgba(20, 35, 55, 0.8);
+  border-color: rgba(74, 222, 128, 0.2);
+  transform: translateX(8px);
+}
+
+.predictionIcon {
+  font-size: 28px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 14px;
+}
+
+.predictionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.predictionLabel {
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.predictionDesc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.predictionValue {
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.predictionValue.high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.predictionValue.medium {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+}
+
+.predictionValue.positive {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .summaryCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chartsSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 20px;
+  }
+
+  .summaryCards {
+    grid-template-columns: 1fr;
+  }
+
+  .statCard {
+    padding: 20px !important;
+  }
+
+  .statValue {
+    font-size: 28px;
+  }
+
+  .predictionItem {
+    flex-wrap: wrap;
+  }
+
+  .predictionValue {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+}

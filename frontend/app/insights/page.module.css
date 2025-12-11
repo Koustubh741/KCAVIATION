@@ -1,0 +1,538 @@
+.container {
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1f2e 50%, #0a1a20 100%);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #ffffff, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+}
+
+/* Period Toggle */
+.periodToggle {
+  display: flex;
+  background: rgba(20, 30, 45, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.periodBtn {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.periodBtn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.periodBtn.active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  gap: 24px;
+}
+
+.loadingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(74, 222, 128, 0.2);
+  border-top-color: #4ade80;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+}
+
+/* Summary Grid */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px !important;
+  background: rgba(20, 30, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+}
+
+.statIcon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.3));
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Main Grid */
+.mainGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 2rem;
+}
+
+/* Card Base */
+.warningsCard,
+.airlinesCard,
+.trendsCard,
+.forecastsCard,
+.heatmapCard,
+.chartCard {
+  background: rgba(20, 30, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.cardTitle span {
+  font-size: 1.5rem;
+}
+
+/* Warnings */
+.warningsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.warningItem {
+  padding: 16px;
+  background: rgba(15, 25, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+}
+
+.warningHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.warningLevel {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+.warningTime {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+.warningTitle {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.warningDesc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Airlines */
+.airlinesList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.airlineRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: rgba(15, 25, 40, 0.6);
+  border-radius: 12px;
+}
+
+.airlineInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 100px;
+}
+
+.airlineName {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.airlineSentiment {
+  font-size: 0.8rem;
+}
+
+.airlineSignalBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.airlineSignalFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.airlineSignalCount {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-width: 30px;
+  text-align: right;
+}
+
+.airlineTrend {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 24px;
+}
+
+/* Trends */
+.trendsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trendItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(15, 25, 40, 0.6);
+  border-radius: 12px;
+}
+
+.trendTheme {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+.trendChange {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* Forecasts */
+.forecastsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.forecastItem {
+  padding: 16px;
+  background: rgba(15, 25, 40, 0.6);
+  border-radius: 14px;
+}
+
+.forecastHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.forecastCategory {
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 16px;
+  color: #a5b4fc;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.forecastTimeframe {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+.forecastPrediction {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.forecastProbability {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.probBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.probFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.probValue {
+  color: #4ade80;
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-width: 40px;
+}
+
+/* Heatmap */
+.heatmapCard {
+  grid-column: span 2;
+}
+
+.heatmapContainer {
+  overflow-x: auto;
+}
+
+.heatmapHeader {
+  display: grid;
+  grid-template-columns: 100px repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.heatmapCorner {
+  /* Empty corner */
+}
+
+.heatmapHeaderCell {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 8px;
+}
+
+.heatmapBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.heatmapRow {
+  display: grid;
+  grid-template-columns: 100px repeat(5, 1fr);
+  gap: 8px;
+}
+
+.heatmapRowLabel {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.heatmapCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.heatmapCell:hover {
+  transform: scale(1.05);
+}
+
+.heatmapLegend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.legendGradient {
+  width: 150px;
+  height: 12px;
+  background: linear-gradient(90deg, #f87171, #fbbf24, #4ade80);
+  border-radius: 6px;
+}
+
+/* Weekly Chart */
+.chartCard {
+  margin-top: 0;
+}
+
+.chartContainer {
+  padding: 20px 0;
+}
+
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 200px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chartBarGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.chartBar {
+  width: 40px;
+  background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
+  border-radius: 8px 8px 0 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.chartBar:hover {
+  transform: scaleY(1.1);
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+}
+
+.chartLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .summaryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heatmapCard {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .heatmapRow {
+    grid-template-columns: 80px repeat(5, 1fr);
+  }
+}

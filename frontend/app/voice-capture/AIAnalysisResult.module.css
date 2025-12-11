@@ -1,0 +1,402 @@
+.analysisContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.mainTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.titleIcon {
+    font-size: 1.75rem;
+}
+
+/* Summary Card */
+.summaryCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.cardTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 16px;
+}
+
+.summaryText {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+.themeTag {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 20px;
+    color: #4ade80;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Metrics Row */
+.metricsRow {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+}
+
+.metricCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.metricTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 16px;
+}
+
+/* Sentiment */
+.sentimentDisplay {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sentimentLabel {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.sentimentScore {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.sentimentBars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sentimentBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sentimentBar>span:first-child {
+    width: 70px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sentimentBar>span:last-child {
+    width: 40px;
+    text-align: right;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+.barTrack {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Confidence */
+.confidenceDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.confidenceCircle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.confidenceCircle svg {
+    width: 100%;
+    height: 100%;
+}
+
+.confidenceValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #4ade80;
+}
+
+.confidenceLabel {
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+/* Tags Row */
+.tagsRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.tagsCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.keywordTag {
+    padding: 8px 16px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    color: #a5b4fc;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.themeTagItem {
+    padding: 8px 16px;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 20px;
+    color: #4ade80;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Market Signals */
+.signalsCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.signalsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.signalItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(15, 25, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.signalItem:hover {
+    background: rgba(20, 35, 55, 0.8);
+    transform: translateX(8px);
+}
+
+.signalInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.signalTrend {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.signalText {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+}
+
+.signalStrength {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+}
+
+/* Predictions */
+.predictionsCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.predictionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.predictionItem {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.predictionInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.predictionEvent {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.predictionProb {
+    color: #4ade80;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.predictionBar {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.predictionFill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px currentColor;
+}
+
+/* Airlines */
+.airlinesCard {
+    background: rgba(20, 30, 45, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+.airlinesList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.airlineItem {
+    padding: 20px;
+    background: rgba(15, 25, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.airlineItem:hover {
+    background: rgba(20, 35, 55, 0.8);
+    border-color: rgba(74, 222, 128, 0.2);
+}
+
+.airlineHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.airlineName {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.airlineRelevance {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.airlineSignals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.airlineSignalTag {
+    padding: 6px 12px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 16px;
+    color: #a5b4fc;
+    font-size: 0.8rem;
+}
+
+/* Timestamp */
+.timestamp {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .metricsRow,
+    .tagsRow {
+        grid-template-columns: 1fr;
+    }
+
+    .signalItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
