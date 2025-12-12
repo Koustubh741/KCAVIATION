@@ -1,0 +1,113 @@
+emerging themese code 
+
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
+import { TrendingUp, TrendingDown, Minus, Target } from 'lucide-react'
+
+// Helper function for trend icons
+const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
+  switch (trend) {
+    case 'up':
+      return <TrendingUp className="h-4 w-4 text-green-500" />
+    case 'down':
+      return <TrendingDown className="h-4 w-4 text-red-500" />
+    default:
+      return <Minus className="h-4 w-4 text-gray-500" />
+  }
+}
+
+// Helper function for confidence colors
+const getConfidenceColor = (confidence: number) => {
+  if (confidence >= 0.9) return 'bg-green-500'
+  if (confidence >= 0.8) return 'bg-blue-500'
+  if (confidence >= 0.7) return 'bg-yellow-500'
+  return 'bg-orange-500'
+}
+
+// Emerging Themes Component
+export function EmergingThemes({ themes }: { themes: Array<{
+  id: string
+  name: string
+  count: number
+  confidence: number
+  trend: 'up' | 'down' | 'stable'
+}> }) {
+  return (
+    <Card className="border-l-4 border-l-indigo-500 bg-gradient-to-br from-indigo-50/30 to-indigo-50/10 shadow-lg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-indigo-700">
+          <Target className="h-5 w-5 text-indigo-600" />
+          Emerging Themes
+        </CardTitle>
+        <CardDescription>Key themes and trends in aviation intelligence</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {themes.map((theme) => (
+            <div key={theme.id} className="p-4 rounded-lg border">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold">{theme.name}</h4>
+                {getTrendIcon(theme.trend)}
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl font-bold">{theme.count}</span>
+                <span className="text-sm text-muted-foreground">signals</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${getConfidenceColor(theme.confidence)}`}
+                    style={{ width: `${theme.confidence * 100}%` }}
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {Math.round(theme.confidence * 100)}%
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+dashboard.tsx coe
+
+
+ <Card className="border-l-4 border-l-indigo-500 bg-gradient-to-br from-indigo-50/30 to-indigo-50/10 shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-indigo-700">
+            <Target className="h-5 w-5 text-indigo-600" />
+            Emerging Themes
+          </CardTitle>
+          <CardDescription>Key themes and trends in aviation intelligence</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {mockThemes.map((theme) => (
+              <div key={theme.id} className="p-4 rounded-lg border">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">{theme.name}</h4>
+                  {getTrendIcon(theme.trend)}
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl font-bold">{theme.count}</span>
+                  <span className="text-sm text-muted-foreground">signals</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${getConfidenceColor(theme.confidence)}`}
+                      style={{ width: `${theme.confidence * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {Math.round(theme.confidence * 100)}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
