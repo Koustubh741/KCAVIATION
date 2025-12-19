@@ -5,22 +5,7 @@ import VoiceRecorder from './VoiceRecorder'
 import AIAnalysisResult from './AIAnalysisResult'
 import styles from './page.module.css'
 
-// Predefined Themes for Aviation Intelligence
-const PREDEFINED_THEMES = [
-  { id: 'hiring', label: 'Hiring / Firing', icon: '👥' },
-  { id: 'pilot_training', label: 'Pilot Training Demand', icon: '🎓' },
-  { id: 'recency_lapse', label: 'Recency Lapse', icon: '⏰' },
-  { id: 'fleet_expansion', label: 'Fleet Expansion / Aircraft Deliveries', icon: '✈️' },
-  { id: 'regulatory', label: 'Regulatory Changes', icon: '📋' },
-  { id: 'simulator', label: 'Simulator Demand', icon: '🎮' },
-  { id: 'operations', label: 'Internal Operational Updates', icon: '⚙️' },
-  { id: 'competition', label: 'Market Competition', icon: '🏆' },
-  { id: 'pricing', label: 'Pricing Signals', icon: '💰' },
-  { id: 'finance', label: 'Finance / Utilization', icon: '📊' },
-]
-
 export default function VoiceCapturePage() {
-  const [selectedTheme, setSelectedTheme] = useState(null)
   const [transcription, setTranscription] = useState(null)
   const [aiAnalysis, setAiAnalysis] = useState(null)
   const [isRecording, setIsRecording] = useState(false)
@@ -36,8 +21,33 @@ export default function VoiceCapturePage() {
         // Simulated AI analysis - replace with actual API call
         await new Promise(resolve => setTimeout(resolve, 2000))
 
-        const analysis = generateMockAnalysis(data.transcription, selectedTheme)
+        const analysis = generateMockAnalysis(data.transcription)
         setAiAnalysis(analysis)
+
+        // Save to LocalStorage for Insights History
+        const now = new Date()
+
+        // Get current user
+        const userStr = localStorage.getItem('user')
+        const user = userStr ? JSON.parse(userStr) : null
+        const userEmail = user ? user.email : 'guest'
+
+        const newRecord = {
+          userId: userEmail,
+          time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          date: now.toISOString().split('T')[0],
+          airline: analysis.airlineSpecifications[0]?.airline || 'Unknown Airline',
+          country: 'India', // Default for demo
+          theme: analysis.themes[0] || 'General',
+          signal: 'Strong Positive', // Derived for demo
+          summary: analysis.summary,
+          transcript: data.transcription
+        }
+
+        const existingHistory = JSON.parse(localStorage.getItem('recording_history') || '[]')
+        const updatedHistory = [newRecord, ...existingHistory]
+        localStorage.setItem('recording_history', JSON.stringify(updatedHistory))
+
       } catch (error) {
         console.error('AI Analysis error:', error)
       } finally {
@@ -52,16 +62,10 @@ export default function VoiceCapturePage() {
     setIsRecording(recording)
   }
 
-  const handleThemeSelect = (themeId) => {
-    setSelectedTheme(themeId === selectedTheme ? null : themeId)
-  }
-
   // Mock AI Analysis Generator (replace with actual AI API)
-  const generateMockAnalysis = (text, themeId) => {
-    const selectedThemeData = PREDEFINED_THEMES.find(t => t.id === themeId)
-
+  const generateMockAnalysis = (text) => {
     return {
-      summary: `AI-generated intelligence summary based on the voice capture. The analysis detected market signals related to ${selectedThemeData?.label || 'general aviation intelligence'}. Key patterns identified suggest significant market movements in the coming weeks.`,
+      summary: `AI-generated intelligence summary based on the voice capture. The analysis detected market signals related to general aviation intelligence. Key patterns identified suggest significant market movements in the coming weeks.`,
 
       keywords: [
         'fleet expansion',
@@ -72,7 +76,7 @@ export default function VoiceCapturePage() {
       ].slice(0, 3 + Math.floor(Math.random() * 3)),
 
       themes: [
-        selectedThemeData?.label || 'Hiring / Firing',
+        'Hiring / Firing',
         'Market Competition',
         'Pilot Training Demand'
       ].slice(0, 1 + Math.floor(Math.random() * 2)),
@@ -108,7 +112,7 @@ export default function VoiceCapturePage() {
       ],
 
       timestamp: new Date().toISOString(),
-      originalTheme: selectedThemeData?.label
+      originalTheme: null
     }
   }
 
@@ -122,28 +126,7 @@ export default function VoiceCapturePage() {
       </div>
 
       <div className={styles.content}>
-        {/* Theme Selection */}
-        <div className={styles.themeSection}>
-          <h2 className={styles.sectionTitle}>
-            <span className={styles.sectionIcon}>🎯</span>
-            Select Intelligence Theme
-          </h2>
-          <p className={styles.sectionDesc}>
-            Choose a predefined theme to focus the AI analysis
-          </p>
-          <div className={styles.themeGrid}>
-            {PREDEFINED_THEMES.map((theme) => (
-              <button
-                key={theme.id}
-                className={`${styles.themeCard} ${selectedTheme === theme.id ? styles.selected : ''}`}
-                onClick={() => handleThemeSelect(theme.id)}
-              >
-                <span className={styles.themeIcon}>{theme.icon}</span>
-                <span className={styles.themeLabel}>{theme.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Voice Recorder */}
         <div className={styles.recorderSection}>
@@ -154,7 +137,6 @@ export default function VoiceCapturePage() {
           <VoiceRecorder
             onTranscription={handleTranscription}
             onRecordingState={handleRecordingState}
-            selectedTheme={selectedTheme}
           />
         </div>
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Card from '../../components/Card'
-import Heatmap from './Heatmap'
 import styles from './Dashboard.module.css'
 
 export default function Dashboard() {
@@ -21,7 +20,48 @@ export default function Dashboard() {
       activeAirlines: 12,
       avgConfidence: 0.87,
     })
+
+    // Load local history
+    const userStr = localStorage.getItem('user')
+    const user = userStr ? JSON.parse(userStr) : null
+    const currentEmail = user ? user.email : 'guest'
+
+    const history = JSON.parse(localStorage.getItem('recording_history') || '[]')
+    const userSpecificHistory = history.filter(record => record.userId === currentEmail)
+    setRecordingHistory(userSpecificHistory)
   }, [])
+
+  const [recordingHistory, setRecordingHistory] = useState([])
+  const [themePeriod, setThemePeriod] = useState('month') // day, month, year
+
+  const FIXED_THEMES = ['Hiring', 'Expansion', 'Financial', 'Operations', 'Safety', 'Training']
+
+  // Calculate Emerging Themes
+  const getEmergingThemes = () => {
+    const now = new Date()
+    const filteredByTime = recordingHistory.filter(record => {
+      const recordDate = new Date(record.date)
+      if (themePeriod === 'day') {
+        return recordDate.toDateString() === now.toDateString()
+      } else if (themePeriod === 'month') {
+        return recordDate.getMonth() === now.getMonth() && recordDate.getFullYear() === now.getFullYear()
+      } else if (themePeriod === 'year') {
+        return recordDate.getFullYear() === now.getFullYear()
+      }
+      return true
+    })
+
+    return FIXED_THEMES.map(theme => {
+      const count = filteredByTime.filter(r =>
+        r.theme.toLowerCase().includes(theme.toLowerCase()) ||
+        r.summary.toLowerCase().includes(theme.toLowerCase()) ||
+        (r.transcript && r.transcript.toLowerCase().includes(theme.toLowerCase()))
+      ).length
+      return { theme, count }
+    })
+  }
+
+  const emergingThemes = getEmergingThemes()
 
   return (
     <div className={styles.dashboard}>
@@ -70,6 +110,43 @@ export default function Dashboard() {
           </div>
         </Card>
       </div>
+
+      {/* Emerging Themes */}
+      <Card className={styles.themesCard}>
+        <div className={styles.cardHeader}>
+          <h2 className={styles.sectionTitle}>
+            <span>✨</span> Emerging Themes
+          </h2>
+          <select
+            className={styles.periodSelect}
+            value={themePeriod}
+            onChange={(e) => setThemePeriod(e.target.value)}
+          >
+            <option value="day">Today</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
+        <div className={styles.themesListContainer}>
+          {emergingThemes.map((item, index) => (
+            <div key={index} className={styles.emergingThemeItem}>
+              <div className={styles.emergingThemeHeader}>
+                <span className={styles.emergingThemeName}>{item.theme}</span>
+                <span className={styles.emergingThemeCount}>{item.count}</span>
+              </div>
+              <div className={styles.emergingThemeBarContainer}>
+                <div
+                  className={styles.emergingThemeBar}
+                  style={{
+                    width: `${Math.min(item.count * 10, 100)}%`,
+                    backgroundColor: item.count > 0 ? '#4ade80' : '#334155'
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Charts Section */}
       <div className={styles.chartsSection}>
@@ -120,14 +197,6 @@ export default function Dashboard() {
               <span className={styles.trendValue}>+10%</span>
             </div>
           </div>
-        </Card>
-
-        <Card className={styles.heatmapCard}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.sectionTitle}>Market Heatmap</h2>
-            <button className={styles.viewAllBtn}>View All →</button>
-          </div>
-          <Heatmap />
         </Card>
       </div>
 

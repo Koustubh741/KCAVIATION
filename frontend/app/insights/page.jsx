@@ -14,16 +14,6 @@ const mockData = {
     avgConfidence: 0.82
   },
 
-  weeklyTrends: [
-    { day: 'Mon', signals: 8 },
-    { day: 'Tue', signals: 12 },
-    { day: 'Wed', signals: 15 },
-    { day: 'Thu', signals: 9 },
-    { day: 'Fri', signals: 18 },
-    { day: 'Sat', signals: 6 },
-    { day: 'Sun', signals: 4 }
-  ],
-
   airlineSignals: [
     { airline: 'Indigo', signals: 15, trend: 'up', sentiment: 'Positive', themes: ['Hiring', 'Expansion'] },
     { airline: 'Air India', signals: 12, trend: 'up', sentiment: 'Positive', themes: ['Fleet', 'Training'] },
@@ -59,18 +49,177 @@ const mockData = {
     { airline: 'SpiceJet', hiring: 40, training: 45, fleet: 35, finance: 25, operations: 50 },
     { airline: 'Vistara', hiring: 65, training: 70, fleet: 60, finance: 80, operations: 75 },
     { airline: 'GoAir', hiring: 50, training: 55, fleet: 45, finance: 40, operations: 55 }
+  ],
+
+  recordingHistory: [
+    {
+      time: '10:30 AM',
+      date: '2023-12-18',
+      airline: 'Indigo',
+      country: 'India',
+      theme: 'Hiring',
+      signal: 'Strong Positive',
+      summary: 'Discussion about new pilot recruitment drive and training centers.',
+      transcript: 'We are seeing a significant need for more pilots. The recruitment drive is starting next week with a focus on experienced captains. New training centers are being set up in Bangalore and Delhi to handle the influx.'
+    },
+    {
+      time: '02:15 PM',
+      date: '2023-12-17',
+      airline: 'Air India',
+      country: 'India',
+      theme: 'Fleet',
+      signal: 'Moderate Positive',
+      summary: 'Analysis of recent Boeing order announcements and delivery timelines.',
+      transcript: 'The recent order from Boeing is confirmed. Delivery timelines are expected to be slightly delayed, but the fleet expansion plan remains on track. We need to prepare for the induction of the wide-body aircraft.'
+    },
+    {
+      time: '09:00 AM',
+      date: '2023-12-16',
+      airline: 'SpiceJet',
+      country: 'India',
+      theme: 'Finance',
+      signal: 'High Negative',
+      summary: 'Review of quarterly financial results and operational costs.',
+      transcript: 'Quarterly results are showing increased operational costs due to fuel prices. Cash flow is tight, and we strictly need to monitor expenditure in the coming months. Some routes might need to be rationalized.'
+    },
+    {
+      time: '04:45 PM',
+      date: '2023-12-15',
+      airline: 'Vistara',
+      country: 'India',
+      theme: 'Regulatory',
+      signal: 'Neutral',
+      summary: 'Impact of new DGCA regulations on flight duty time limitations.',
+      transcript: 'The new DGCA regulations on FDTL will impact our rostering. We need to ensure compliance without disrupting the schedule. A meeting with the crew scheduling team is required.'
+    },
+    {
+      time: '11:20 AM',
+      date: '2023-12-14',
+      airline: 'Indigo',
+      country: 'India',
+      theme: 'Operations',
+      signal: 'Strong Positive',
+      summary: 'Operational efficiency improvements in ground handling.',
+      transcript: 'Ground handling times have improved by 15% this month. The new automated baggage system is working well. We should look into replicating this model at other major hubs.'
+    },
+    {
+      time: '08:00 AM',
+      date: '2023-12-13',
+      airline: 'Emirates',
+      country: 'UAE',
+      theme: 'Fleet',
+      signal: 'Strong Positive',
+      summary: 'Expansion of premium economy cabins across the fleet.',
+      transcript: 'Customer feedback on the Premium Economy cabin has been excellent. We are proceeding with the retrofit of the A380 fleet. Marketing needs to push this new offering aggressively.'
+    },
+    {
+      time: '03:30 PM',
+      date: '2023-12-12',
+      airline: 'Lufthansa',
+      country: 'Germany',
+      theme: 'Hiring',
+      signal: 'Moderate Positive',
+      summary: 'Recruitment strategies for cabin crew in European markets.',
+      transcript: 'Competition for cabin crew in Europe is intensifying. We need to revise our compensation packages and look into recruiting from new markets to meet the summer schedule demands.'
+    }
+  ],
+
+  airlineInsights: [
+    { airline: 'Indigo', totalInsights: 145, hiringStatus: 'Active', activePositions: 24 },
+    { airline: 'Air India', totalInsights: 98, hiringStatus: 'Hiring', activePositions: 18 },
+    { airline: 'SpiceJet', totalInsights: 45, hiringStatus: 'Frozen', activePositions: 0 },
+    { airline: 'Vistara', totalInsights: 76, hiringStatus: 'Active', activePositions: 12 },
+    { airline: 'Emirates', totalInsights: 112, hiringStatus: 'Hiring', activePositions: 35 },
+    { airline: 'Lufthansa', totalInsights: 88, hiringStatus: 'Reviewing', activePositions: 5 }
   ]
 }
 
 export default function InsightsPage() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [selectedPeriod, setSelectedPeriod] = useState('daily')
+  const [userEmail, setUserEmail] = useState('')
+  const [userName, setUserName] = useState('')
+
+  // Modal State
+  const [selectedRecord, setSelectedRecord] = useState(null)
+  const [selectedAirline, setSelectedAirline] = useState(null)
+  const [activeTab, setActiveTab] = useState('overview')
+
+
+  // Search and Filter States
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState({
+    airline: '',
+    country: '',
+    theme: '',
+    date: ''
+  })
+
+  // Derived filter options
+  const filterOptions = {
+    airlines: ['Indigo', 'Air India', 'SpiceJet', 'Vistara', 'GoAir', 'Emirates', 'Lufthansa'],
+    countries: ['India', 'UAE', 'Germany', 'USA', 'UK'],
+    themes: ['Hiring', 'Fleet', 'Finance', 'Regulatory', 'Operations', 'Training']
+  }
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleRowClick = (record) => {
+    setSelectedRecord(record)
+    setActiveTab('overview')
+  }
+
+  const handleCloseModal = () => {
+    setSelectedRecord(null)
+  }
+
+  // Filtered Data Logic
+  const filteredHistory = data?.recordingHistory.filter(item => {
+    // Search Query (matches airline, theme, summary)
+    const searchLower = searchQuery.toLowerCase()
+    const matchesSearch =
+      item.airline.toLowerCase().includes(searchLower) ||
+      item.theme.toLowerCase().includes(searchLower) ||
+      item.summary.toLowerCase().includes(searchLower)
+
+    // Filters
+    const matchesAirline = filters.airline ? item.airline === filters.airline : true
+    const matchesCountry = filters.country ? item.country === filters.country : true
+    const matchesTheme = filters.theme ? item.theme === filters.theme : true
+    const matchesDate = filters.date ? item.date === filters.date : true
+
+    return matchesSearch && matchesAirline && matchesCountry && matchesTheme && matchesDate
+  })
 
   useEffect(() => {
+    // Get user from local storage
+    const userStr = localStorage.getItem('user')
+    let currentEmail = ''
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        currentEmail = user.email
+        setUserEmail(user.email)
+        setUserName(user.name || 'User')
+      } catch (e) {
+        console.error('Error parsing user data', e)
+      }
+    }
+
     // Simulated data loading
     setTimeout(() => {
-      setData(mockData)
+      // Load local history
+      const localHistory = JSON.parse(localStorage.getItem('recording_history') || '[]')
+      const userSpecificHistory = localHistory.filter(record => record.userId === currentEmail)
+
+      const fullData = {
+        ...mockData,
+        recordingHistory: userSpecificHistory
+      }
+
+      setData(fullData)
       setLoading(false)
     }, 1000)
   }, [])
@@ -111,16 +260,64 @@ export default function InsightsPage() {
             Real-time market intelligence for aviation leadership
           </p>
         </div>
-        <div className={styles.periodToggle}>
-          {['daily', 'weekly', 'monthly'].map(period => (
-            <button
-              key={period}
-              className={`${styles.periodBtn} ${selectedPeriod === period ? styles.active : ''}`}
-              onClick={() => setSelectedPeriod(period)}
-            >
-              {period.charAt(0).toUpperCase() + period.slice(1)}
-            </button>
-          ))}
+
+      </div>
+
+      {/* Search and Filters */}
+      <div className={styles.searchFilterContainer}>
+        {/* Search Bar */}
+        <div className={styles.searchBox}>
+          <span className={styles.searchIcon}>🔍</span>
+          <input
+            type="text"
+            placeholder="Search insights..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+
+        {/* Filters */}
+        <div className={styles.filtersGroup}>
+          <select
+            className={styles.filterDropdown}
+            value={filters.airline}
+            onChange={(e) => handleFilterChange('airline', e.target.value)}
+          >
+            <option value="">All Airlines</option>
+            {filterOptions.airlines.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          <select
+            className={styles.filterDropdown}
+            value={filters.country}
+            onChange={(e) => handleFilterChange('country', e.target.value)}
+          >
+            <option value="">All Countries</option>
+            {filterOptions.countries.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          <select
+            className={styles.filterDropdown}
+            value={filters.theme}
+            onChange={(e) => handleFilterChange('theme', e.target.value)}
+          >
+            <option value="">All Themes</option>
+            {filterOptions.themes.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          <input
+            type="date"
+            className={styles.filterDropdown}
+            value={filters.date}
+            onChange={(e) => handleFilterChange('date', e.target.value)}
+          />
         </div>
       </div>
 
@@ -167,8 +364,185 @@ export default function InsightsPage() {
         </Card>
       </div>
 
+      {/* Recording History */}
+      <Card className={styles.historyCard}>
+        <h2 className={styles.cardTitle}>
+          <span>📜</span> Recording History
+          {userEmail && <span style={{ fontSize: '1rem', fontWeight: '400', color: 'rgba(255,255,255,0.5)', marginLeft: '12px' }}>({userEmail})</span>}
+        </h2>
+        <table className={styles.historyTable}>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Date</th>
+              <th>Airline</th>
+              <th>Country</th>
+              <th>Theme</th>
+              <th>Summary</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredHistory.length > 0 ? (
+              filteredHistory.map((record, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleRowClick(record)}
+                  className={styles.clickableRow}
+                >
+                  <td>{record.time}</td>
+                  <td>{record.date}</td>
+                  <td>{record.airline}</td>
+                  <td>{record.country}</td>
+                  <td><span className={styles.themeBadge}>{record.theme}</span></td>
+                  <td>{record.summary}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '2rem' }}>
+                  No records found matching your filters.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </Card>
+
+      {/* Airline Insights */}
+      <Card className={styles.airlineInsightsCard}>
+        <h2 className={styles.cardTitle}>
+          <span>✈️</span> Airline Insights
+        </h2>
+        <div className={styles.airlineGrid}>
+          {data.airlineInsights.map((airline, index) => {
+            // Calculate real-time count from recordingHistory
+            const realTimeCount = data.recordingHistory.filter(r => r.airline === airline.airline).length;
+
+            return (
+              <div
+                key={index}
+                className={styles.airlineBox}
+                onClick={() => setSelectedAirline(airline.airline)}
+              >
+                <h3 className={styles.airlineBoxTitle}>{airline.airline}</h3>
+                <div className={styles.airlineBoxStats}>
+                  <div className={styles.airlineBoxRow}>
+                    <span>Total Insights:</span>
+                    <strong>{realTimeCount}</strong>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </Card>
+
+      {/* Airline Details Modal */}
+      {selectedAirline && (
+        <div className={styles.modalOverlay} onClick={() => setSelectedAirline(null)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>{selectedAirline} Insights</h2>
+              <button className={styles.closeButton} onClick={() => setSelectedAirline(null)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.insightsList}>
+                {data.recordingHistory.filter(r => r.airline === selectedAirline).length > 0 ? (
+                  data.recordingHistory
+                    .filter(r => r.airline === selectedAirline)
+                    .map((record, index) => (
+                      <div key={index} className={styles.insightItem} onClick={() => {
+                        setSelectedAirline(null);
+                        handleRowClick(record);
+                      }}>
+                        <div className={styles.insightHeader}>
+                          <span className={styles.insightDate}>{record.date} • {record.time}</span>
+                          <span className={styles.themeBadge}>{record.theme}</span>
+                        </div>
+                        <p className={styles.insightSummary}>{record.summary}</p>
+                      </div>
+                    ))
+                ) : (
+                  <p style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>No insights recorded for this airline yet.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Record Details Modal */}
+      {selectedRecord && (
+        <div className={styles.modalOverlay} onClick={handleCloseModal}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Insight Details</h2>
+              <button className={styles.closeButton} onClick={handleCloseModal}>×</button>
+            </div>
+
+            <div className={styles.modalTabs}>
+              <button
+                className={`${styles.tabBtn} ${activeTab === 'overview' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Overview
+              </button>
+              <button
+                className={`${styles.tabBtn} ${activeTab === 'transcript' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('transcript')}
+              >
+                Transcript
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              {activeTab === 'overview' ? (
+                <div className={styles.overviewGrid}>
+                  <div className={styles.detailItem}>
+                    <label>Time & Date</label>
+                    <p>{selectedRecord.time}, {selectedRecord.date}</p>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>Logged-in User</label>
+                    <p>{userName || 'N/A'}</p>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>Country</label>
+                    <p>{selectedRecord.country}</p>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>Airline</label>
+                    <p>{selectedRecord.airline}</p>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>Theme</label>
+                    <span className={styles.themeBadge}>{selectedRecord.theme}</span>
+                  </div>
+
+                </div>
+              ) : (
+                <div className={styles.transcriptView}>
+                  <div className={styles.aiSummaryBox}>
+                    <h3>AI Summary</h3>
+                    <p>{selectedRecord.summary}</p>
+                  </div>
+                  <div className={styles.transcriptBox}>
+                    <h3>Full Transcript</h3>
+                    <p>"{selectedRecord.transcript}"</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content Grid */}
       <div className={styles.mainGrid}>
+
+        {/* Emerging Themes */}
+
+
         {/* High-Risk Warnings */}
         <Card className={styles.warningsCard}>
           <h2 className={styles.cardTitle}>
@@ -207,15 +581,6 @@ export default function InsightsPage() {
               <div key={index} className={styles.airlineRow}>
                 <div className={styles.airlineInfo}>
                   <span className={styles.airlineName}>{airline.airline}</span>
-                  <span
-                    className={styles.airlineSentiment}
-                    style={{
-                      color: airline.sentiment === 'Positive' ? '#4ade80' :
-                        airline.sentiment === 'Negative' ? '#f87171' : '#94a3b8'
-                    }}
-                  >
-                    {airline.sentiment}
-                  </span>
                 </div>
                 <div className={styles.airlineSignalBar}>
                   <div
@@ -324,26 +689,6 @@ export default function InsightsPage() {
             <span>Low</span>
             <div className={styles.legendGradient}></div>
             <span>High</span>
-          </div>
-        </div>
-      </Card>
-
-      {/* Weekly Trend Chart */}
-      <Card className={styles.chartCard}>
-        <h2 className={styles.cardTitle}>
-          <span>📊</span> Weekly Intelligence Summary
-        </h2>
-        <div className={styles.chartContainer}>
-          <div className={styles.chartBars}>
-            {data.weeklyTrends.map((day, index) => (
-              <div key={index} className={styles.chartBarGroup}>
-                <div
-                  className={styles.chartBar}
-                  style={{ height: `${(day.signals / 20) * 100}%` }}
-                />
-                <span className={styles.chartLabel}>{day.day}</span>
-              </div>
-            ))}
           </div>
         </div>
       </Card>

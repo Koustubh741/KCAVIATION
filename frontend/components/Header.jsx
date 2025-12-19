@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import styles from './Header.module.css'
 
 export default function Header() {
@@ -13,17 +14,10 @@ export default function Header() {
         </div>
       </div>
       <div className={styles.rightSection}>
-        <div className={styles.searchBar}>
-          <span className={styles.searchIcon}>🔍</span>
-          <input
-            type="text"
-            placeholder="Search me..."
-            className={styles.searchInput}
-          />
-        </div>
-        <button className={styles.notificationButton}>
+
+        <Link href="/alerts" className={styles.notificationButton}>
           <span className={styles.bellIcon}>🔔</span>
-        </button>
+        </Link>
         <div className={styles.userAvatar}>
           <span>A</span>
         </div>

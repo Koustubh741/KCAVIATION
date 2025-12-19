@@ -52,86 +52,7 @@ export default function AIAnalysisResult({ analysis }) {
                 )}
             </Card>
 
-            {/* Key Metrics Row */}
-            <div className={styles.metricsRow}>
-                {/* Sentiment */}
-                <Card className={styles.metricCard}>
-                    <h4 className={styles.metricTitle}>Sentiment</h4>
-                    <div className={styles.sentimentDisplay}>
-                        <span
-                            className={styles.sentimentLabel}
-                            style={{ color: getSentimentColor(analysis.sentiment.overall) }}
-                        >
-                            {analysis.sentiment.overall}
-                        </span>
-                        <span className={styles.sentimentScore}>
-                            {(analysis.sentiment.score * 100).toFixed(0)}%
-                        </span>
-                    </div>
-                    <div className={styles.sentimentBars}>
-                        <div className={styles.sentimentBar}>
-                            <span>Positive</span>
-                            <div className={styles.barTrack}>
-                                <div
-                                    className={styles.barFill}
-                                    style={{ width: `${analysis.sentiment.breakdown.positive}%`, background: '#4ade80' }}
-                                />
-                            </div>
-                            <span>{analysis.sentiment.breakdown.positive}%</span>
-                        </div>
-                        <div className={styles.sentimentBar}>
-                            <span>Neutral</span>
-                            <div className={styles.barTrack}>
-                                <div
-                                    className={styles.barFill}
-                                    style={{ width: `${analysis.sentiment.breakdown.neutral}%`, background: '#94a3b8' }}
-                                />
-                            </div>
-                            <span>{analysis.sentiment.breakdown.neutral}%</span>
-                        </div>
-                        <div className={styles.sentimentBar}>
-                            <span>Negative</span>
-                            <div className={styles.barTrack}>
-                                <div
-                                    className={styles.barFill}
-                                    style={{ width: `${analysis.sentiment.breakdown.negative}%`, background: '#f87171' }}
-                                />
-                            </div>
-                            <span>{analysis.sentiment.breakdown.negative}%</span>
-                        </div>
-                    </div>
-                </Card>
 
-                {/* Confidence Score */}
-                <Card className={styles.metricCard}>
-                    <h4 className={styles.metricTitle}>Confidence Score</h4>
-                    <div className={styles.confidenceDisplay}>
-                        <div className={styles.confidenceCircle}>
-                            <svg viewBox="0 0 100 100">
-                                <circle
-                                    cx="50" cy="50" r="40"
-                                    fill="none"
-                                    stroke="rgba(255,255,255,0.1)"
-                                    strokeWidth="8"
-                                />
-                                <circle
-                                    cx="50" cy="50" r="40"
-                                    fill="none"
-                                    stroke="#4ade80"
-                                    strokeWidth="8"
-                                    strokeDasharray={`${analysis.confidenceScore * 251.2} 251.2`}
-                                    strokeLinecap="round"
-                                    transform="rotate(-90 50 50)"
-                                />
-                            </svg>
-                            <span className={styles.confidenceValue}>
-                                {(analysis.confidenceScore * 100).toFixed(0)}%
-                            </span>
-                        </div>
-                        <p className={styles.confidenceLabel}>High Confidence</p>
-                    </div>
-                </Card>
-            </div>
 
             {/* Keywords & Themes Row */}
             <div className={styles.tagsRow}>
@@ -190,30 +111,7 @@ export default function AIAnalysisResult({ analysis }) {
             </Card>
 
             {/* Predictive Probabilities */}
-            <Card className={styles.predictionsCard}>
-                <h4 className={styles.cardTitle}>
-                    <span>🔮</span> Predictive Probabilities
-                </h4>
-                <div className={styles.predictionsList}>
-                    {analysis.predictiveProbabilities.map((pred, index) => (
-                        <div key={index} className={styles.predictionItem}>
-                            <div className={styles.predictionInfo}>
-                                <span className={styles.predictionEvent}>{pred.event}</span>
-                                <span className={styles.predictionProb}>{pred.probability}%</span>
-                            </div>
-                            <div className={styles.predictionBar}>
-                                <div
-                                    className={styles.predictionFill}
-                                    style={{
-                                        width: `${pred.probability}%`,
-                                        background: pred.probability > 70 ? '#4ade80' : pred.probability > 40 ? '#fbbf24' : '#f87171'
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </Card>
+
 
             {/* Airline Specifications */}
             <Card className={styles.airlinesCard}>

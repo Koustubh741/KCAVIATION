@@ -8,10 +8,10 @@ export default function Navbar() {
   const pathname = usePathname()
 
   const navItems = [
-    { href: '/', icon: '🏠', label: 'Home' },
     { href: '/voice-capture', icon: '🎤', label: 'Voice Intel' },
     { href: '/insights', icon: '📊', label: 'Insights' },
     { href: '/dashboard', icon: '📈', label: 'Dashboard' },
+    { href: '/updates', icon: '📰', label: 'Updates' },
     { href: '/alerts', icon: '🔔', label: 'Alerts' },
   ]
 

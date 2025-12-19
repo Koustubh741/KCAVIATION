@@ -14,6 +14,10 @@ export default function VoiceRecorder({ onTranscription, onRecordingState }) {
 
   const startRecording = async () => {
     try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Audio recording is not supported in this browser or context. Please ensure you are using a secure connection (HTTPS) or localhost.')
+        return
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mediaRecorder = new MediaRecorder(stream)
       mediaRecorderRef.current = mediaRecorder
