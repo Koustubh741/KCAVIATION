@@ -98,7 +98,7 @@
 /* Charts Section */
 .chartsSection {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr;
   gap: 24px;
 }
 
@@ -295,4 +295,70 @@
     text-align: center;
     margin-top: 10px;
   }
+}
+
+/* Emerging Themes */
+.themesCard {
+  background: rgba(20, 30, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  backdrop-filter: blur(20px);
+}
+
+.periodSelect {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.periodSelect option {
+  background: #0f172a;
+  color: #fff;
+}
+
+.themesListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emergingThemeItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.emergingThemeHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.emergingThemeName {
+  color: #fff;
+  font-weight: 500;
+}
+
+.emergingThemeCount {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.emergingThemeBarContainer {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.emergingThemeBar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
 }

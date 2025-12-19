@@ -71,6 +71,23 @@ export default function AuthPage() {
             // Simulated auth - replace with actual API call
             await new Promise(resolve => setTimeout(resolve, 1500))
 
+            if (!isLogin) {
+                // Signup Success
+                setIsAnimating(true)
+                setTimeout(() => {
+                    setIsLogin(true)
+                    setError('')
+                    setFormData(prev => ({
+                        ...prev,
+                        password: '',
+                        confirmPassword: ''
+                    }))
+                    setIsAnimating(false)
+                }, 300)
+                return
+            }
+
+            // Login Success
             // Store user session (mock)
             localStorage.setItem('user', JSON.stringify({
                 email: formData.email,
