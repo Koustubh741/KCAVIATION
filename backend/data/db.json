@@ -1,0 +1,1683 @@
+{
+  "users": [
+    {
+      "id": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "email": "suraj@gmail.com",
+      "passwordHash": "$2a$10$JkFrQ8rpZufC0cLvBhpafebpWEsa80b7XnTmvjds1d62wzWDGp5xm",
+      "name": "suraj",
+      "role": "analyst",
+      "createdAt": "2025-12-19T09:31:56.373Z",
+      "isActive": true
+    },
+    {
+      "id": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "email": "deed@gmail.com",
+      "passwordHash": "$2a$10$8KkXIjHPmUuwd/FWbosilOoI4PhfnxNysiNKBPYMFS0DBfR0cmVOm",
+      "name": "deddq",
+      "role": "analyst",
+      "createdAt": "2025-12-21T16:46:45.271Z",
+      "isActive": true
+    },
+    {
+      "id": "30383936-fabf-43fd-91f0-4df712753a50",
+      "email": "vipra@cachedigitech.com",
+      "passwordHash": "$2a$10$V8bx16p/8vYENBVruxJHZugFHuu2jl9LOyjpDfK.VIBYeShDPkm3a",
+      "name": "Vipra",
+      "role": "analyst",
+      "createdAt": "2025-12-22T06:24:55.043Z",
+      "isActive": true
+    }
+  ],
+  "insights": [
+    {
+      "id": "c5ff0d3e-3d0a-4c5e-bd9b-ceeb96c464ce",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Indigo is planning to expand its fleet by 10 in numbers.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Expansion",
+      "sentiment": "Positive",
+      "score": 0.85,
+      "summary": "Indigo's decision to expand its fleet by adding 10 aircraft indicates a strategic move towards growth in the competitive Indian aviation market. This expansion can enhance operational capacity and market presence, suggesting positive future prospects for the airline.",
+      "keywords": [
+        "Indigo",
+        "expand",
+        "fleet",
+        "aircraft",
+        "growth"
+      ],
+      "analysis": {
+        "summary": "Indigo's decision to expand its fleet by adding 10 aircraft indicates a strategic move towards growth in the competitive Indian aviation market. This expansion can enhance operational capacity and market presence, suggesting positive future prospects for the airline.",
+        "keywords": [
+          "Indigo",
+          "expand",
+          "fleet",
+          "aircraft",
+          "growth"
+        ],
+        "themes": [
+          "Expansion"
+        ],
+        "sentiment": {
+          "overall": "Positive",
+          "score": 0.85,
+          "breakdown": {
+            "positive": 80,
+            "neutral": 15,
+            "negative": 5
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Indigo's fleet expansion indicates confidence in future demand and market growth.",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.9
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Indigo",
+            "relevance": "High",
+            "signals": [
+              "fleet expansion",
+              "increased capacity"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increase in market share due to fleet expansion",
+            "probability": 75,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.85,
+        "timestamp": "2025-12-19T09:47:28.803Z"
+      },
+      "timestamp": "2025-12-19T09:47:28.806Z"
+    },
+    {
+      "id": "89cf074a-f668-4a71-968d-ba52358b0679",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Confidential operations update honestly things are moving faster than what we officially communicated. The recent aircraft deliveries have pushed our fleet size up but internally we are struggling to keep aircraft flying at optimal utilization levels. We have quietly started hiring more pilots even though the public message is that headcount is stable. The bigger issue is training capacity. Simulator demand is much higher than expected and we were booking external slots just to avoid delays. On top of that competitors are dumping capacity on the same routes which is forcing us to tweak pricing more aggressively than planned. Fleet expansion, hiring, pilot training, demands, pricing signals",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The airline is experiencing rapid fleet expansion while simultaneously facing challenges in pilot training and operational efficiency. The competitive landscape is intensifying, leading to aggressive pricing strategies.",
+      "keywords": [
+        "aircraft deliveries",
+        "fleet size",
+        "pilot hiring",
+        "simulator demand",
+        "pricing adjustments"
+      ],
+      "analysis": {
+        "summary": "The airline is experiencing rapid fleet expansion while simultaneously facing challenges in pilot training and operational efficiency. The competitive landscape is intensifying, leading to aggressive pricing strategies.",
+        "keywords": [
+          "aircraft deliveries",
+          "fleet size",
+          "pilot hiring",
+          "simulator demand",
+          "pricing adjustments"
+        ],
+        "themes": [
+          "Hiring",
+          "Training"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 30,
+            "neutral": 40,
+            "negative": 30
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased competition on routes leading to aggressive pricing adjustments.",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.8
+          },
+          {
+            "signal": "Higher demand for simulator training slots indicating growth in fleet utilization.",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.7
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "fleet expansion",
+              "increased hiring"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased pilot hiring to meet operational demands",
+            "probability": 75,
+            "confidence": 0.9
+          }
+        ],
+        "confidenceScore": 0.85,
+        "timestamp": "2025-12-19T09:53:45.751Z"
+      },
+      "timestamp": "2025-12-19T09:53:45.753Z"
+    },
+    {
+      "id": "fc9ef96b-7be5-4732-ae65-879053db0ce8",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "CONFIDENTIAL OPERATIONS UPDATE Honestly, things are moving faster than what we officially communicated. The recent aircraft deliveries have pushed our fleet size up, but internally we are struggling to keep aircraft flying at optimal utilization level. We have quietly started hiring more pilots even though the public message is that headcount is stable. The bigger issue is training capacity. Simulator demand is much higher than expected and we were booking external slots just to avoid delays. On top of that, competitors are dumping capacity on the same routes which is forcing us to quick pricing more aggressively than planned.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Negative",
+      "score": 0.3,
+      "summary": "The airline is experiencing a rapid increase in fleet size but is facing challenges in optimizing aircraft utilization and pilot training capacity. This has led to increased hiring of pilots and aggressive pricing strategies in response to competitive pressures on key routes.",
+      "keywords": [
+        "aircraft deliveries",
+        "fleet size",
+        "pilot hiring",
+        "training capacity",
+        "simulator demand"
+      ],
+      "analysis": {
+        "summary": "The airline is experiencing a rapid increase in fleet size but is facing challenges in optimizing aircraft utilization and pilot training capacity. This has led to increased hiring of pilots and aggressive pricing strategies in response to competitive pressures on key routes.",
+        "keywords": [
+          "aircraft deliveries",
+          "fleet size",
+          "pilot hiring",
+          "training capacity",
+          "simulator demand"
+        ],
+        "themes": [
+          "Hiring",
+          "Training"
+        ],
+        "sentiment": {
+          "overall": "Negative",
+          "score": 0.3,
+          "breakdown": {
+            "positive": 10,
+            "neutral": 20,
+            "negative": 70
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased hiring of pilots to address operational needs.",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.85
+          },
+          {
+            "signal": "High demand for simulator training leading to booking of external slots.",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          },
+          {
+            "signal": "Competitors increasing capacity on the same routes, resulting in aggressive pricing strategies.",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.8
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "Increased hiring of pilots",
+              "High demand for simulator training"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased pilot hiring will continue over the next quarter",
+            "probability": 70,
+            "confidence": 0.8
+          },
+          {
+            "event": "Operational inefficiencies will lead to potential delays in service",
+            "probability": 60,
+            "confidence": 0.75
+          }
+        ],
+        "confidenceScore": 0.78,
+        "timestamp": "2025-12-19T09:57:12.889Z"
+      },
+      "timestamp": "2025-12-19T09:57:12.890Z"
+    },
+    {
+      "id": "89b39544-b728-47ed-b166-255e70ec614b",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Off-record compliance and training concerns. Between us, there was a minor regulatory lapse last quarter related to training documentation. It wasn't safety critical, but it definitely caught management off guard. With upcoming regulatory changes, compliance teams are under pressure to tighten controls fast. To manage this, we have started relocating resources internally and quietly, letting go of some non-essential roles while bringing in people who understand training compliance. This has increased costs and slightly reduced aircraft utilizations, especially where crew availability is tight.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Training",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The airline is facing compliance and training challenges due to a recent regulatory lapse, prompting a strategic shift in resource allocation. This has led to increased costs and reduced aircraft utilization as the company prioritizes hiring personnel with expertise in training compliance.",
+      "keywords": [
+        "regulatory lapse",
+        "training compliance",
+        "resource relocation",
+        "increased costs",
+        "crew availability"
+      ],
+      "analysis": {
+        "summary": "The airline is facing compliance and training challenges due to a recent regulatory lapse, prompting a strategic shift in resource allocation. This has led to increased costs and reduced aircraft utilization as the company prioritizes hiring personnel with expertise in training compliance.",
+        "keywords": [
+          "regulatory lapse",
+          "training compliance",
+          "resource relocation",
+          "increased costs",
+          "crew availability"
+        ],
+        "themes": [
+          "Training",
+          "Firing"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased focus on compliance training may lead to improved regulatory adherence and operational stability in the long term.",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.7
+          },
+          {
+            "signal": "Higher operational costs due to hiring specialized compliance personnel could impact short-term profitability.",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.8
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "regulatory compliance focus",
+              "increased operational costs"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased regulatory scrutiny leading to more compliance audits",
+            "probability": 75,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.75,
+        "timestamp": "2025-12-19T10:17:30.449Z"
+      },
+      "timestamp": "2025-12-19T10:17:30.452Z"
+    },
+    {
+      "id": "154818ea-0615-4e85-89fb-113f9568c4fd",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Okay, so I probably shouldn't be saying this on record, but anyway, there is a lot of happening inside the airline right now. Hiring has quietly started again, and not the usual token quotes. I'm talking pilots, cabin crew, ground operation, and even technicians. From what I'm hearing, this is linked to upcoming aircraft deliveries and a few new international routes that haven't been announced yet. HR is pushing referrals hard. If your CV comes through an internal channel, it's moving faster. That's not official, but that's what's happening. Cabin crew interviews are already filling up and grooming standards are back to being very strict. It looks like the airline wants to reposition itself as more premium. Pilots, especially experienced ones, are being faster. Command upgrades, better roasters, clearly a retention move after last year exists. Even ground and ops roles aren't the same anymore. More tech and more automation, fewer basic roles. They're hiring smarter, not just more. If someone is looking to get in, now is the window. Once this goes public, competition will explode. All right, that's all I'm saying off the record.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Positive",
+      "score": 0.8,
+      "summary": "The airline is ramping up hiring across various roles, indicating a strategic shift towards expansion with new aircraft deliveries and international routes. The focus on premium service and advanced operational roles suggests a repositioning in the market to enhance competitiveness.",
+      "keywords": [
+        "hiring",
+        "cabin crew",
+        "pilots",
+        "expansion",
+        "premium service",
+        "automation"
+      ],
+      "analysis": {
+        "summary": "The airline is ramping up hiring across various roles, indicating a strategic shift towards expansion with new aircraft deliveries and international routes. The focus on premium service and advanced operational roles suggests a repositioning in the market to enhance competitiveness.",
+        "keywords": [
+          "hiring",
+          "cabin crew",
+          "pilots",
+          "expansion",
+          "premium service",
+          "automation"
+        ],
+        "themes": [
+          "Hiring",
+          "Expansion"
+        ],
+        "sentiment": {
+          "overall": "Positive",
+          "score": 0.8,
+          "breakdown": {
+            "positive": 70,
+            "neutral": 20,
+            "negative": 10
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased hiring across multiple roles indicates growth and expansion plans.",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.9
+          },
+          {
+            "signal": "Focus on premium service and advanced operational roles suggests a strategic repositioning.",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "increased hiring",
+              "new routes"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Announcement of new international routes",
+            "probability": 80,
+            "confidence": 0.85
+          },
+          {
+            "event": "Continuation of hiring trends in the next quarter",
+            "probability": 75,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.85,
+        "timestamp": "2025-12-19T10:21:33.651Z"
+      },
+      "timestamp": "2025-12-19T10:21:33.654Z"
+    },
+    {
+      "id": "10bd0044-bf44-47b1-baf9-25337f07fe59",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "If we look at the current airline market, Indigo is hiring aggressively because of its massive A320neo fleet expansion, but pilots are quietly complaining that while aircraft numbers are going up, salary revisions and rest periods are not. And at the same time, Air India is recruiting wide-body pilots for Boeing 787s and A350s while pushing out older contracts under Reconstructing, which many pilots see as indirect firing. And all of this is happening in a highly competitive market, while Emirates continues steady wide-body growth and attracts experienced Indian pilots with tax-free salaries and better rosters, creating a talent drain that forces Indigo and Air India to hire even more aggressively while pilots' unions across both India's careers are raising demand for higher pay. Predictable schedules and reduced fatigue warn that rapid fleet expansion without parallel human investment could lead to protectionism, resignations, and long-term safety risks.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Negative",
+      "score": 0.3,
+      "summary": "The Indian airline market is experiencing aggressive hiring due to fleet expansions, particularly by Indigo, while pilot dissatisfaction over pay and working conditions is rising. Air India is also facing challenges with recruitment and contract restructuring, leading to potential safety and operational risks amidst a competitive environment.",
+      "keywords": [
+        "Indigo",
+        "Air India",
+        "pilot recruitment",
+        "fleet expansion",
+        "salary revisions",
+        "Emirates",
+        "talent drain"
+      ],
+      "analysis": {
+        "summary": "The Indian airline market is experiencing aggressive hiring due to fleet expansions, particularly by Indigo, while pilot dissatisfaction over pay and working conditions is rising. Air India is also facing challenges with recruitment and contract restructuring, leading to potential safety and operational risks amidst a competitive environment.",
+        "keywords": [
+          "Indigo",
+          "Air India",
+          "pilot recruitment",
+          "fleet expansion",
+          "salary revisions",
+          "Emirates",
+          "talent drain"
+        ],
+        "themes": [
+          "Hiring",
+          "Expansion"
+        ],
+        "sentiment": {
+          "overall": "Negative",
+          "score": 0.3,
+          "breakdown": {
+            "positive": 10,
+            "neutral": 20,
+            "negative": 70
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased pilot recruitment due to fleet expansion and competition for talent.",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.85
+          },
+          {
+            "signal": "Pilot dissatisfaction over salary and working conditions could lead to resignations.",
+            "strength": "Moderate",
+            "trend": "down",
+            "confidence": 0.7
+          },
+          {
+            "signal": "Potential safety risks due to rapid fleet expansion without adequate pilot support.",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.8
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Indigo",
+            "relevance": "High",
+            "signals": [
+              "aggressive hiring",
+              "fleet expansion"
+            ],
+            "competitiveImpact": "High"
+          },
+          {
+            "airline": "Air India",
+            "relevance": "High",
+            "signals": [
+              "restructuring contracts",
+              "wide-body recruitment"
+            ],
+            "competitiveImpact": "High"
+          },
+          {
+            "airline": "Emirates",
+            "relevance": "Medium",
+            "signals": [
+              "tax-free salaries",
+              "experienced pilot attraction"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased pilot turnover due to dissatisfaction",
+            "probability": 75,
+            "confidence": 0.8
+          },
+          {
+            "event": "Potential delays in operations due to pilot shortages",
+            "probability": 60,
+            "confidence": 0.7
+          }
+        ],
+        "confidenceScore": 0.75,
+        "timestamp": "2025-12-19T10:28:01.961Z"
+      },
+      "timestamp": "2025-12-19T10:28:01.963Z"
+    },
+    {
+      "id": "03cf7be2-243e-4b37-8f5e-f59404e59288",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "If you look at the current airline market, SpiceJet is hiring aggressively because of its massive A320 Neofleet expansion, but pilots are quietly complaining that while aircraft numbers are going up, salary divisions and rest periods are not. At the same time, Air India is recruiting wide-body pilots for Boeing 787s and A340s It's not A340, it's A350 while pushing out older contracts under Reconstruction, which may pilots see as indirect firing and all of this is happening in a highly competitive market where Emirates continues steady wide-body growth and attracts experienced Indian pilots with tax-free semis and better roasters, creating a talent drain that forces Indigo and Emirates It's not Emirates, it's Air India to hire even more aggressively while pilot unions across both Indian carriers are raising demand for higher pay, predictable schedules, reduced fatigue, warning management that rapid fleet expansion without parallel human investment could lead to protests, resignations and long-term safety risks.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Negative",
+      "score": 0.3,
+      "summary": "The current airline market in India shows aggressive hiring patterns, particularly from SpiceJet and Air India, amidst a backdrop of fleet expansion and increasing pilot dissatisfaction regarding pay and working conditions. This situation is exacerbated by competition from Emirates, which is attracting talent away from Indian carriers, raising concerns about workforce stability and safety.",
+      "keywords": [
+        "SpiceJet",
+        "Air India",
+        "pilot hiring",
+        "fleet expansion",
+        "Emirates",
+        "salary complaints",
+        "pilot unions"
+      ],
+      "analysis": {
+        "summary": "The current airline market in India shows aggressive hiring patterns, particularly from SpiceJet and Air India, amidst a backdrop of fleet expansion and increasing pilot dissatisfaction regarding pay and working conditions. This situation is exacerbated by competition from Emirates, which is attracting talent away from Indian carriers, raising concerns about workforce stability and safety.",
+        "keywords": [
+          "SpiceJet",
+          "Air India",
+          "pilot hiring",
+          "fleet expansion",
+          "Emirates",
+          "salary complaints",
+          "pilot unions"
+        ],
+        "themes": [
+          "Hiring",
+          "Expansion"
+        ],
+        "sentiment": {
+          "overall": "Negative",
+          "score": 0.3,
+          "breakdown": {
+            "positive": 10,
+            "neutral": 20,
+            "negative": 70
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased hiring by SpiceJet and Air India amidst fleet expansion",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.8
+          },
+          {
+            "signal": "Pilot dissatisfaction leading to potential protests and resignations",
+            "strength": "Moderate",
+            "trend": "down",
+            "confidence": 0.7
+          },
+          {
+            "signal": "Talent drain to Emirates due to better compensation and schedules",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.9
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "SpiceJet",
+            "relevance": "High",
+            "signals": [
+              "aggressive hiring",
+              "fleet expansion"
+            ],
+            "competitiveImpact": "Medium"
+          },
+          {
+            "airline": "Air India",
+            "relevance": "High",
+            "signals": [
+              "wide-body recruitment",
+              "pilot dissatisfaction"
+            ],
+            "competitiveImpact": "High"
+          },
+          {
+            "airline": "Emirates",
+            "relevance": "High",
+            "signals": [
+              "talent drain",
+              "better compensation"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Potential protests from pilots due to dissatisfaction",
+            "probability": 75,
+            "confidence": 0.8
+          },
+          {
+            "event": "Increased hiring by Indian airlines to combat talent drain",
+            "probability": 65,
+            "confidence": 0.7
+          }
+        ],
+        "confidenceScore": 0.75,
+        "timestamp": "2025-12-19T10:33:06.626Z"
+      },
+      "timestamp": "2025-12-19T10:33:06.628Z"
+    },
+    {
+      "id": "03480f31-72ce-47cd-9236-12a2dafa4693",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Indigo has quite financial and regulatory pressure that there's growing concern internally that new regulatory changes will slow down operations more than expected. We already had a small compliance gap and leadership doesn't want a repeat. Financially, margins are tight. We are adjusting pricing carefully because competitors are undercutting fares and any different aircraft utilization immediately shows up in the numbers. That's why internal operations are being monitored far more closely than before.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Financial",
+      "sentiment": "Negative",
+      "score": 0.2,
+      "summary": "Indigo is facing significant financial and regulatory pressures that may hinder operations due to compliance gaps and competitive fare undercutting. The airline is closely monitoring internal operations to manage tight margins and ensure regulatory adherence.",
+      "keywords": [
+        "Indigo",
+        "regulatory changes",
+        "financial pressure",
+        "compliance gap",
+        "pricing strategy"
+      ],
+      "analysis": {
+        "summary": "Indigo is facing significant financial and regulatory pressures that may hinder operations due to compliance gaps and competitive fare undercutting. The airline is closely monitoring internal operations to manage tight margins and ensure regulatory adherence.",
+        "keywords": [
+          "Indigo",
+          "regulatory changes",
+          "financial pressure",
+          "compliance gap",
+          "pricing strategy"
+        ],
+        "themes": [
+          "Financial",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Negative",
+          "score": 0.2,
+          "breakdown": {
+            "positive": 10,
+            "neutral": 30,
+            "negative": 60
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Regulatory changes may slow down operations significantly.",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.8
+          },
+          {
+            "signal": "Increased competition is leading to fare undercutting.",
+            "strength": "Moderate",
+            "trend": "down",
+            "confidence": 0.7
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Indigo",
+            "relevance": "High",
+            "signals": [
+              "regulatory changes",
+              "financial pressure"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Operational delays due to compliance issues",
+            "probability": 70,
+            "confidence": 0.75
+          }
+        ],
+        "confidenceScore": 0.85,
+        "timestamp": "2025-12-19T11:07:21.732Z"
+      },
+      "timestamp": "2025-12-19T11:07:21.736Z"
+    },
+    {
+      "id": "97eaf53e-9685-4c84-b4ab-689a4b559d0b",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Internal workforce and training reality officially say hiring is balanced, but in reality we are actively recruiting pilots and instructors because training pipelines are stretching, simulator demands have gone up so heavily with new aircraft types coming in and at the same time some back office roles are being phased out quietly. These decisions are tied directly to keep an operational footprint of the country while trying to improve the efficiency of indigo, which is one of the cases which has been extremely hit.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The airline is experiencing a critical need for pilots and instructors due to stretched training pipelines and increased simulator demands, while quietly phasing out some back office roles to enhance operational efficiency. This reflects a balanced hiring approach amidst operational challenges.",
+      "keywords": [
+        "hiring",
+        "training",
+        "simulator",
+        "operational efficiency",
+        "phasing out"
+      ],
+      "analysis": {
+        "summary": "The airline is experiencing a critical need for pilots and instructors due to stretched training pipelines and increased simulator demands, while quietly phasing out some back office roles to enhance operational efficiency. This reflects a balanced hiring approach amidst operational challenges.",
+        "keywords": [
+          "hiring",
+          "training",
+          "simulator",
+          "operational efficiency",
+          "phasing out"
+        ],
+        "themes": [
+          "Hiring",
+          "Training"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 30,
+            "neutral": 40,
+            "negative": 30
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased demand for pilot training and simulator usage due to new aircraft types",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.85
+          },
+          {
+            "signal": "Phasing out of back office roles to improve operational efficiency",
+            "strength": "Moderate",
+            "trend": "down",
+            "confidence": 0.7
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "increased training demand",
+              "operational efficiency improvements"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased recruitment for pilots and instructors in the next quarter",
+            "probability": 75,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.75,
+        "timestamp": "2025-12-19T12:20:32.594Z"
+      },
+      "timestamp": "2025-12-19T12:20:32.595Z"
+    },
+    {
+      "id": "32411c4d-8185-4599-9d17-2b33a1cddb1c",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Internal workforce and training reality. Officially, we say hiring is balanced, but in reality, we are actively recruiting pilots and instructors because training pipelines are stretched in indigo. Simulator demand has gone up sharply with new aircraft types coming in. At the same time, some back office roles are being phased out quietly. These decisions are tied directly to keeping operational costs under control while trying to improve fleet utilization. None of this is visually visible externally yet.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The airline is actively recruiting pilots and instructors to address stretched training pipelines, indicating a strong demand for simulator training due to new aircraft types. However, there are also quiet reductions in back office roles to manage operational costs and improve fleet utilization.",
+      "keywords": [
+        "hiring",
+        "recruiting",
+        "pilots",
+        "instructors",
+        "training pipelines",
+        "simulator demand",
+        "operational costs"
+      ],
+      "analysis": {
+        "summary": "The airline is actively recruiting pilots and instructors to address stretched training pipelines, indicating a strong demand for simulator training due to new aircraft types. However, there are also quiet reductions in back office roles to manage operational costs and improve fleet utilization.",
+        "keywords": [
+          "hiring",
+          "recruiting",
+          "pilots",
+          "instructors",
+          "training pipelines",
+          "simulator demand",
+          "operational costs"
+        ],
+        "themes": [
+          "Hiring",
+          "Training"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased recruitment indicates demand for pilots and instructors",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.85
+          },
+          {
+            "signal": "Operational cost management through back office role reductions",
+            "strength": "Moderate",
+            "trend": "down",
+            "confidence": 0.7
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "High",
+            "signals": [
+              "Pilot recruitment",
+              "Training demand"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Increased simulator training investments in the near future",
+            "probability": 75,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.82,
+        "timestamp": "2025-12-19T12:34:04.090Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 509
+      },
+      "timestamp": "2025-12-19T12:34:04.095Z"
+    },
+    {
+      "id": "116177ff-e7f7-4a0a-a19f-8aab1ea32e07",
+      "userId": "e58840e3-d86b-42a8-afb7-4d9378ebb357",
+      "userName": "suraj",
+      "transcription": "Internal workforce and training reality officially we say hiring is balanced but in reality we were actively recruiting pilots in indigo airline and instructors because training pipeline are stretch simulated. Demand has gone up sharply with new aircraft types coming in. At the same time some back office roles are being faced. Outrightly these decisions are tied directly to keeping operational course under control while trying to improve fleet utilization. None of this is visible externally yet.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The transcription indicates that there is a balanced hiring approach at Indigo Airlines, but in reality, there is active recruitment of pilots and instructors due to increased demand from new aircraft types. Additionally, some back office roles are being phased out to control operational costs and improve fleet utilization.",
+      "keywords": [
+        "Go Air",
+        "Indigo",
+        "training pipeline",
+        "fleet utilization",
+        "operational costs",
+        "aircraft types",
+        "new aircraft",
+        "back office",
+        "operational",
+        "utilization"
+      ],
+      "analysis": {
+        "summary": "The transcription indicates that there is a balanced hiring approach at Indigo Airlines, but in reality, there is active recruitment of pilots and instructors due to increased demand from new aircraft types. Additionally, some back office roles are being phased out to control operational costs and improve fleet utilization.",
+        "keywords": [
+          "Go Air",
+          "Indigo",
+          "training pipeline",
+          "fleet utilization",
+          "operational costs",
+          "aircraft types",
+          "new aircraft",
+          "back office",
+          "operational",
+          "utilization"
+        ],
+        "themes": [
+          "Hiring",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased demand for pilots and instructors indicates growth in operations",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Indigo",
+            "relevance": "High",
+            "signals": [
+              "Active recruitment",
+              "Operational cost control"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Indigo will continue to recruit pilots and instructors to meet demand",
+            "probability": 70,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.78,
+        "timestamp": "2025-12-19T12:44:19.216Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 500
+      },
+      "timestamp": "2025-12-19T12:44:19.220Z"
+    },
+    {
+      "id": "a27fa308-9572-473f-ab75-5b70dd7afa74",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "Ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Operations",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The transcription does not provide any actionable insights or relevant information regarding the aviation industry, as it consists solely of repeated characters without context or content.",
+      "keywords": [],
+      "analysis": {
+        "summary": "The transcription does not provide any actionable insights or relevant information regarding the aviation industry, as it consists solely of repeated characters without context or content.",
+        "keywords": [],
+        "themes": [
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [],
+        "airlineSpecifications": [],
+        "predictiveProbabilities": [],
+        "confidenceScore": 0.8,
+        "timestamp": "2025-12-21T16:48:51.082Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 59
+      },
+      "timestamp": "2025-12-21T16:48:51.086Z"
+    },
+    {
+      "id": "dcbaaa8b-8192-44ba-b5ab-038561e84ab3",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "Ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Operations",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The transcription does not provide any actionable insights or relevant information regarding the aviation industry, making it impossible to derive themes or sentiments.",
+      "keywords": [],
+      "analysis": {
+        "summary": "The transcription does not provide any actionable insights or relevant information regarding the aviation industry, making it impossible to derive themes or sentiments.",
+        "keywords": [],
+        "themes": [
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [],
+        "airlineSpecifications": [],
+        "predictiveProbabilities": [],
+        "confidenceScore": 0.5,
+        "timestamp": "2025-12-21T16:49:02.486Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 59
+      },
+      "timestamp": "2025-12-21T16:49:02.489Z"
+    },
+    {
+      "id": "e4affae3-7884-42b8-9264-4b219c9b71a7",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "in Mumbai region and we also need some simulators for the practice.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Training",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "The transcription indicates a need for simulators in the Mumbai region, suggesting a focus on training and operational readiness. This reflects an ongoing commitment to enhancing pilot skills and operational efficiency.",
+      "keywords": [
+        "simulators",
+        "simulator",
+        "practice",
+        "Mumbai"
+      ],
+      "analysis": {
+        "summary": "The transcription indicates a need for simulators in the Mumbai region, suggesting a focus on training and operational readiness. This reflects an ongoing commitment to enhancing pilot skills and operational efficiency.",
+        "keywords": [
+          "simulators",
+          "simulator",
+          "practice",
+          "Mumbai"
+        ],
+        "themes": [
+          "Training",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased demand for simulators indicates focus on training",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "Low",
+            "signals": [
+              "Need for simulators"
+            ],
+            "competitiveImpact": "Low"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Potential investment in simulator facilities",
+            "probability": 60,
+            "confidence": 0.7
+          }
+        ],
+        "confidenceScore": 0.65,
+        "timestamp": "2025-12-21T16:49:19.995Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 67
+      },
+      "timestamp": "2025-12-21T16:49:19.997Z"
+    },
+    {
+      "id": "9fdb411b-a7ef-44b3-8f45-662ca926ac69",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "We need simulators in the Chennai region for the training of pilots.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Training",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "There is a need for simulators in the Chennai region to facilitate pilot training, indicating a focus on enhancing training capabilities in that area. This reflects an ongoing commitment to developing pilot skills and improving training infrastructure.",
+      "keywords": [
+        "simulators",
+        "simulator",
+        "training",
+        "Chennai",
+        "pilots"
+      ],
+      "analysis": {
+        "summary": "There is a need for simulators in the Chennai region to facilitate pilot training, indicating a focus on enhancing training capabilities in that area. This reflects an ongoing commitment to developing pilot skills and improving training infrastructure.",
+        "keywords": [
+          "simulators",
+          "simulator",
+          "training",
+          "Chennai",
+          "pilots"
+        ],
+        "themes": [
+          "Training",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 10,
+            "neutral": 70,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Increased demand for pilot training resources in Chennai",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Unknown",
+            "relevance": "Low",
+            "signals": [
+              "Training needs"
+            ],
+            "competitiveImpact": "Low"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Potential investment in simulator facilities in Chennai",
+            "probability": 60,
+            "confidence": 0.7
+          }
+        ],
+        "confidenceScore": 0.72,
+        "timestamp": "2025-12-21T17:20:23.980Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 68
+      },
+      "timestamp": "2025-12-21T17:20:23.983Z"
+    },
+    {
+      "id": "84bbe865-84e9-4740-acd5-f287f1812881",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "There is news of hiring in Air India of pilots and crew members.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Positive",
+      "score": 0.75,
+      "summary": "Air India is reportedly hiring pilots and crew members, indicating a potential increase in operational capacity and workforce expansion. This move suggests a positive outlook for the airline's growth strategy in the Indian aviation market.",
+      "keywords": [
+        "Air India",
+        "crew members",
+        "hiring",
+        "pilots",
+        "crew"
+      ],
+      "analysis": {
+        "summary": "Air India is reportedly hiring pilots and crew members, indicating a potential increase in operational capacity and workforce expansion. This move suggests a positive outlook for the airline's growth strategy in the Indian aviation market.",
+        "keywords": [
+          "Air India",
+          "crew members",
+          "hiring",
+          "pilots",
+          "crew"
+        ],
+        "themes": [
+          "Hiring",
+          "Expansion"
+        ],
+        "sentiment": {
+          "overall": "Positive",
+          "score": 0.75,
+          "breakdown": {
+            "positive": 53,
+            "neutral": 23,
+            "negative": 25
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Hiring of pilots and crew indicates operational growth",
+            "strength": "Strong",
+            "trend": "up",
+            "confidence": 0.85
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Air India",
+            "relevance": "High",
+            "signals": [
+              "Pilot hiring",
+              "Crew recruitment"
+            ],
+            "competitiveImpact": "High"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Air India will expand its operational capacity",
+            "probability": 80,
+            "confidence": 0.85
+          }
+        ],
+        "confidenceScore": 0.82,
+        "timestamp": "2025-12-21T17:24:29.457Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 64
+      },
+      "timestamp": "2025-12-21T17:24:29.459Z"
+    },
+    {
+      "id": "0e87986d-8b40-4951-b14e-18c1ff6463c9",
+      "userId": "3761b09c-fbd0-4dcd-92fb-a0f483b5c8f3",
+      "userName": "deddq",
+      "transcription": "There is a requirement of 25 cabin crews in Air India.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Neutral",
+      "score": 0.5,
+      "summary": "Air India has a requirement for 25 cabin crews, indicating ongoing staffing needs as the airline manages its operational demands. This hiring signal reflects a focus on enhancing service capacity.",
+      "keywords": [
+        "Air India",
+        "cabin crews",
+        "cabin crew",
+        "requirement",
+        "crew"
+      ],
+      "analysis": {
+        "summary": "Air India has a requirement for 25 cabin crews, indicating ongoing staffing needs as the airline manages its operational demands. This hiring signal reflects a focus on enhancing service capacity.",
+        "keywords": [
+          "Air India",
+          "cabin crews",
+          "cabin crew",
+          "requirement",
+          "crew"
+        ],
+        "themes": [
+          "Hiring",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Neutral",
+          "score": 0.5,
+          "breakdown": {
+            "positive": 20,
+            "neutral": 60,
+            "negative": 20
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Staffing requirement indicates operational focus",
+            "strength": "Moderate",
+            "trend": "up",
+            "confidence": 0.75
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Air India",
+            "relevance": "High",
+            "signals": [
+              "Cabin crew hiring"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Air India will continue to recruit additional cabin crew",
+            "probability": 70,
+            "confidence": 0.8
+          }
+        ],
+        "confidenceScore": 0.78,
+        "timestamp": "2025-12-21T17:24:57.804Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 54
+      },
+      "timestamp": "2025-12-21T17:24:57.807Z"
+    },
+    {
+      "id": "586b369a-577d-4292-b9f8-b9a135b76f14",
+      "userId": "30383936-fabf-43fd-91f0-4df712753a50",
+      "userName": "Vipra",
+      "transcription": "Hi, there are some hirings going on in the Indigo airline. They are also firing their senior pilots. I think they need better staff. Thank you.",
+      "airline": "Unknown",
+      "country": "India",
+      "theme": "Hiring",
+      "sentiment": "Negative",
+      "score": 0.3,
+      "summary": "Indigo Airlines is currently hiring while simultaneously firing senior pilots, indicating a shift in staffing strategy that may reflect operational challenges. The need for better staff suggests potential issues with current workforce effectiveness.",
+      "keywords": [
+        "Go Air",
+        "Indigo",
+        "senior pilots",
+        "hiring",
+        "pilots",
+        "firing",
+        "staff"
+      ],
+      "analysis": {
+        "summary": "Indigo Airlines is currently hiring while simultaneously firing senior pilots, indicating a shift in staffing strategy that may reflect operational challenges. The need for better staff suggests potential issues with current workforce effectiveness.",
+        "keywords": [
+          "Go Air",
+          "Indigo",
+          "senior pilots",
+          "hiring",
+          "pilots",
+          "firing",
+          "staff"
+        ],
+        "themes": [
+          "Hiring",
+          "Firing",
+          "Operations"
+        ],
+        "sentiment": {
+          "overall": "Negative",
+          "score": 0.3,
+          "breakdown": {
+            "positive": 25,
+            "neutral": 15,
+            "negative": 60
+          }
+        },
+        "marketSignals": [
+          {
+            "signal": "Staffing changes indicate operational challenges",
+            "strength": "Strong",
+            "trend": "down",
+            "confidence": 0.85
+          }
+        ],
+        "airlineSpecifications": [
+          {
+            "airline": "Indigo",
+            "relevance": "High",
+            "signals": [
+              "Hiring",
+              "Firing"
+            ],
+            "competitiveImpact": "Medium"
+          }
+        ],
+        "predictiveProbabilities": [
+          {
+            "event": "Indigo may face further staffing adjustments in the future",
+            "probability": 70,
+            "confidence": 0.75
+          }
+        ],
+        "confidenceScore": 0.8,
+        "timestamp": "2025-12-22T06:30:33.586Z",
+        "modelUsed": "gpt-4o-mini",
+        "originalTranscriptionLength": 143
+      },
+      "timestamp": "2025-12-22T06:30:33.592Z"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "a5b23893-675c-41b3-b3fd-7dcbaf8ed28d",
+      "title": "High Hiring Activity Detected",
+      "message": "Indigo has announced a significant increase in pilot hiring for the next quarter. This indicates strong growth expectations.",
+      "severity": "High",
+      "airline": "Indigo",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T08:53:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "6ea48cad-414c-46fd-99ea-e2c7f145a53b",
+      "title": "Route Expansion Alert",
+      "message": "Air India is planning to launch 15 new routes to Southeast Asia, indicating aggressive expansion strategy.",
+      "severity": "Medium",
+      "airline": "Air India",
+      "country": "India",
+      "category": "Expansion",
+      "timestamp": "2025-12-19T07:23:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "ca598119-8e99-48fe-b70d-b54f734da7f3",
+      "title": "Financial Performance Update",
+      "message": "SpiceJet Q3 earnings exceeded market expectations by 12%, showing strong financial health.",
+      "severity": "Medium",
+      "airline": "SpiceJet",
+      "country": "India",
+      "category": "Financial",
+      "timestamp": "2025-12-19T05:23:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "060b31a6-b0a6-4dbd-8e00-f8589217c5b0",
+      "title": "Operational Delay Warning",
+      "message": "Vistara reports delays in fleet expansion due to supply chain disruptions. Expected impact on Q4 operations.",
+      "severity": "Critical",
+      "airline": "Vistara",
+      "country": "India",
+      "category": "Operations",
+      "timestamp": "2025-12-19T03:23:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": true,
+      "acknowledged": false
+    },
+    {
+      "id": "f5292694-2e78-4c3d-a341-df8ae579bb3f",
+      "title": "Safety Protocol Update",
+      "message": "GoAir has updated safety protocols following regulatory review. All operations remain normal.",
+      "severity": "Low",
+      "airline": "GoAir",
+      "country": "India",
+      "category": "Safety",
+      "timestamp": "2025-12-19T01:23:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "e880d6be-30bc-41d8-9f17-e1092cb57d36",
+      "title": "Training Capacity Expansion",
+      "message": "Multiple airlines are investing in new simulator facilities and training centers to address pilot shortage.",
+      "severity": "High",
+      "airline": "Market Wide",
+      "country": "Global",
+      "category": "Training",
+      "timestamp": "2025-12-18T21:23:10.733Z",
+      "relatedInsightIds": [],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "eacdb914-2019-48d7-8400-6404e647520c",
+      "title": "Expansion Activity: Unknown",
+      "message": "Indigo's decision to expand its fleet by adding 10 aircraft indicates a strategic move towards growth in the competitive Indian aviation market. This expansion can enhance operational capacity and market presence, suggesting positive future prospects for the airline.",
+      "severity": "Medium",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Expansion",
+      "timestamp": "2025-12-19T09:47:28.808Z",
+      "relatedInsightIds": [
+        "c5ff0d3e-3d0a-4c5e-bd9b-ceeb96c464ce"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "d47c4196-d92b-4dba-b708-8efa2e67f33e",
+      "title": "Hiring Activity: Unknown",
+      "message": "The airline is experiencing rapid fleet expansion while simultaneously facing challenges in pilot training and operational efficiency. The competitive landscape is intensifying, leading to aggressive pricing strategies.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T09:53:45.755Z",
+      "relatedInsightIds": [
+        "89cf074a-f668-4a71-968d-ba52358b0679"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "381f1be2-c5be-484d-a4bc-87470add22ee",
+      "title": "Hiring Activity: Unknown",
+      "message": "The airline is experiencing a rapid increase in fleet size but is facing challenges in optimizing aircraft utilization and pilot training capacity. This has led to increased hiring of pilots and aggressive pricing strategies in response to competitive pressures on key routes.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T09:57:12.891Z",
+      "relatedInsightIds": [
+        "fc9ef96b-7be5-4732-ae65-879053db0ce8"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "06d47537-8e82-4c15-b89d-73b3e2794f0d",
+      "title": "Hiring Activity: Unknown",
+      "message": "The airline is ramping up hiring across various roles, indicating a strategic shift towards expansion with new aircraft deliveries and international routes. The focus on premium service and advanced operational roles suggests a repositioning in the market to enhance competitiveness.",
+      "severity": "Medium",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T10:21:33.656Z",
+      "relatedInsightIds": [
+        "154818ea-0615-4e85-89fb-113f9568c4fd"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "26cebed2-fb85-4c9c-9daa-39e55d778a86",
+      "title": "Hiring Activity: Unknown",
+      "message": "The Indian airline market is experiencing aggressive hiring due to fleet expansions, particularly by Indigo, while pilot dissatisfaction over pay and working conditions is rising. Air India is also facing challenges with recruitment and contract restructuring, leading to potential safety and operational risks amidst a competitive environment.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T10:28:01.965Z",
+      "relatedInsightIds": [
+        "10bd0044-bf44-47b1-baf9-25337f07fe59"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "c85eacc4-c4ec-4fc1-a13f-4feec4ab2325",
+      "title": "Hiring Activity: Unknown",
+      "message": "The current airline market in India shows aggressive hiring patterns, particularly from SpiceJet and Air India, amidst a backdrop of fleet expansion and increasing pilot dissatisfaction regarding pay and working conditions. This situation is exacerbated by competition from Emirates, which is attracting talent away from Indian carriers, raising concerns about workforce stability and safety.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T10:33:06.629Z",
+      "relatedInsightIds": [
+        "03cf7be2-243e-4b37-8f5e-f59404e59288"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "2769bc35-ba8c-49bd-9665-71cae6be1711",
+      "title": "Negative Signal Detected: Unknown",
+      "message": "A negative market signal has been detected for Unknown regarding Financial. Indigo is facing significant financial and regulatory pressures that may hinder operations due to compliance gaps and competitive fare undercutting. The airline is closely monitoring internal operations to manage tight margins and ensure regulatory adherence.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Financial",
+      "timestamp": "2025-12-19T11:07:21.739Z",
+      "relatedInsightIds": [
+        "03480f31-72ce-47cd-9236-12a2dafa4693"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "456d5edf-9fc6-43d6-9490-d394931220bd",
+      "title": "Hiring Activity: Unknown",
+      "message": "The airline is experiencing a critical need for pilots and instructors due to stretched training pipelines and increased simulator demands, while quietly phasing out some back office roles to enhance operational efficiency. This reflects a balanced hiring approach amidst operational challenges.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T12:20:32.597Z",
+      "relatedInsightIds": [
+        "97eaf53e-9685-4c84-b4ab-689a4b559d0b"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "9341fe64-f22c-405c-b53e-636addd18bfa",
+      "title": "Hiring Activity: Unknown",
+      "message": "The airline is actively recruiting pilots and instructors to address stretched training pipelines, indicating a strong demand for simulator training due to new aircraft types. However, there are also quiet reductions in back office roles to manage operational costs and improve fleet utilization.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T12:34:04.098Z",
+      "relatedInsightIds": [
+        "32411c4d-8185-4599-9d17-2b33a1cddb1c"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "b888697d-2535-49c5-820f-62978159150e",
+      "title": "Hiring Activity: Unknown",
+      "message": "The transcription indicates that there is a balanced hiring approach at Indigo Airlines, but in reality, there is active recruitment of pilots and instructors due to increased demand from new aircraft types. Additionally, some back office roles are being phased out to control operational costs and improve fleet utilization.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-19T12:44:19.223Z",
+      "relatedInsightIds": [
+        "116177ff-e7f7-4a0a-a19f-8aab1ea32e07"
+      ],
+      "actionRequired": true,
+      "acknowledged": false
+    },
+    {
+      "id": "aa302e35-52ba-4dd1-93db-5bb51347b32d",
+      "title": "Hiring Activity: Unknown",
+      "message": "Air India is reportedly hiring pilots and crew members, indicating a potential increase in operational capacity and workforce expansion. This move suggests a positive outlook for the airline's growth strategy in the Indian aviation market.",
+      "severity": "Medium",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-21T17:24:29.460Z",
+      "relatedInsightIds": [
+        "84bbe865-84e9-4740-acd5-f287f1812881"
+      ],
+      "actionRequired": false,
+      "acknowledged": false
+    },
+    {
+      "id": "ac27ab71-7609-409d-933e-3e16e1f33088",
+      "title": "Hiring Activity: Unknown",
+      "message": "Air India has a requirement for 25 cabin crews, indicating ongoing staffing needs as the airline manages its operational demands. This hiring signal reflects a focus on enhancing service capacity.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-21T17:24:57.808Z",
+      "relatedInsightIds": [
+        "0e87986d-8b40-4951-b14e-18c1ff6463c9"
+      ],
+      "actionRequired": true,
+      "acknowledged": false
+    },
+    {
+      "id": "c3d90ea2-3695-48bf-9b1b-473b19f0599f",
+      "title": "Hiring Activity: Unknown",
+      "message": "Indigo Airlines is currently hiring while simultaneously firing senior pilots, indicating a shift in staffing strategy that may reflect operational challenges. The need for better staff suggests potential issues with current workforce effectiveness.",
+      "severity": "High",
+      "airline": "Unknown",
+      "country": "India",
+      "category": "Hiring",
+      "timestamp": "2025-12-22T06:30:33.594Z",
+      "relatedInsightIds": [
+        "586b369a-577d-4292-b9f8-b9a135b76f14"
+      ],
+      "actionRequired": true,
+      "acknowledged": false
+    }
+  ]
+}
