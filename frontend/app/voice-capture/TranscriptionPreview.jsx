@@ -1,7 +1,7 @@
 import styles from './TranscriptionPreview.module.css'
 import Card from '../../components/Card'
 
-export default function TranscriptionPreview({ transcription }) {
+export default function TranscriptionPreview({ transcription, keywords = [] }) {
   if (!transcription) return null
 
   const getSentimentColor = (sentiment) => {
@@ -17,13 +17,59 @@ export default function TranscriptionPreview({ transcription }) {
     }
   }
 
+  // Highlight keywords in transcription text
+  const highlightKeywords = (text, keywords) => {
+    if (!text || !keywords || keywords.length === 0) {
+      return text
+    }
+
+    // Sort keywords by length (longer first) to avoid partial matches
+    const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length)
+    
+    // Create a regex pattern that matches keywords (case-insensitive, whole words)
+    const pattern = new RegExp(
+      `\\b(${sortedKeywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+      'gi'
+    )
+
+    // Split text and highlight matches
+    const parts = []
+    let lastIndex = 0
+    let match
+
+    while ((match = pattern.exec(text)) !== null) {
+      // Add text before match
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index))
+      }
+      
+      // Add highlighted match
+      parts.push(
+        <mark key={match.index} className={styles.highlightedKeyword}>
+          {match[0]}
+        </mark>
+      )
+      
+      lastIndex = pattern.lastIndex
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex))
+    }
+
+    return parts.length > 0 ? parts : text
+  }
+
   return (
     <Card className={styles.preview}>
       <h2 className={styles.title}>Transcription Result</h2>
       <div className={styles.content}>
         <div className={styles.transcription}>
           <p className={styles.label}>Transcription:</p>
-          <p className={styles.text}>{transcription.transcription}</p>
+          <p className={styles.text}>
+            {highlightKeywords(transcription.transcription, keywords)}
+          </p>
         </div>
         <div className={styles.metadata}>
           <div className={styles.metaItem}>
