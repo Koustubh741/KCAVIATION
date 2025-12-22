@@ -66,12 +66,22 @@ export default function VoiceRecorder({ onTranscription, onRecordingState }) {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 120000, // 2 minutes timeout for transcription + analysis
       })
+
+      if (response.data.error) {
+        throw new Error(response.data.error)
+      }
 
       onTranscription(response.data)
     } catch (error) {
       console.error('Transcription error:', error)
-      alert('Failed to transcribe audio. Please try again.')
+      const errorMessage = error.response?.data?.error || 
+                          error.response?.data?.detail || 
+                          error.message || 
+                          'Failed to transcribe audio. Please check your connection and try again.'
+      alert(errorMessage)
+      onTranscription(null)
     } finally {
       setIsProcessing(false)
     }

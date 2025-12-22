@@ -12,108 +12,81 @@ export default function VoiceCapturePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const handleTranscription = async (data) => {
+    if (!data) {
+      setTranscription(null)
+      setAiAnalysis(null)
+      setIsAnalyzing(false)
+      return
+    }
+
+    // Check for errors
+    if (data.error) {
+      console.error('Transcription error:', data.error)
+      setTranscription(null)
+      setAiAnalysis(null)
+      setIsAnalyzing(false)
+      return
+    }
+
     setTranscription(data)
+    setIsAnalyzing(true)
 
-    if (data) {
-      // Trigger AI Analysis after transcription
-      setIsAnalyzing(true)
+    if (data && data.analysis) {
+      // Use analysis from backend response
+      setAiAnalysis(data.analysis)
+      setIsAnalyzing(false)
+
+      // Save to LocalStorage for Insights History
+      const now = new Date()
+
+      // Get current user
+      const userStr = localStorage.getItem('user')
+      const user = userStr ? JSON.parse(userStr) : null
+      const userEmail = user ? user.email : 'guest'
+
+      const analysis = data.analysis
+      
+      // Derive signal from sentiment
+      const sentiment = analysis.sentiment?.overall || 'Neutral'
+      const score = analysis.sentiment?.score || 0.5
+      let signal = 'Neutral'
+      if (sentiment === 'Positive' && score > 0.7) {
+        signal = 'Strong Positive'
+      } else if (sentiment === 'Positive') {
+        signal = 'Positive'
+      } else if (sentiment === 'Negative' && score < 0.3) {
+        signal = 'Strong Negative'
+      } else if (sentiment === 'Negative') {
+        signal = 'Negative'
+      }
+
+      const newRecord = {
+        userId: userEmail,
+        time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: now.toISOString().split('T')[0],
+        airline: analysis.airlineSpecifications?.[0]?.airline || data.airline || 'Unknown Airline',
+        country: 'India', // Default for demo
+        theme: analysis.themes?.[0] || data.theme || 'General',
+        signal: signal,
+        summary: analysis.summary || 'No summary available',
+        transcript: data.transcription || ''
+      }
+
       try {
-        // Simulated AI analysis - replace with actual API call
-        await new Promise(resolve => setTimeout(resolve, 2000))
-
-        const analysis = generateMockAnalysis(data.transcription)
-        setAiAnalysis(analysis)
-
-        // Save to LocalStorage for Insights History
-        const now = new Date()
-
-        // Get current user
-        const userStr = localStorage.getItem('user')
-        const user = userStr ? JSON.parse(userStr) : null
-        const userEmail = user ? user.email : 'guest'
-
-        const newRecord = {
-          userId: userEmail,
-          time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          date: now.toISOString().split('T')[0],
-          airline: analysis.airlineSpecifications[0]?.airline || 'Unknown Airline',
-          country: 'India', // Default for demo
-          theme: analysis.themes[0] || 'General',
-          signal: 'Strong Positive', // Derived for demo
-          summary: analysis.summary,
-          transcript: data.transcription
-        }
-
         const existingHistory = JSON.parse(localStorage.getItem('recording_history') || '[]')
         const updatedHistory = [newRecord, ...existingHistory]
         localStorage.setItem('recording_history', JSON.stringify(updatedHistory))
-
       } catch (error) {
-        console.error('AI Analysis error:', error)
-      } finally {
-        setIsAnalyzing(false)
+        console.error('Error saving to history:', error)
       }
     } else {
       setAiAnalysis(null)
+      setIsAnalyzing(false)
     }
   }
 
   const handleRecordingState = (recording) => {
     setIsRecording(recording)
-  }
-
-  // Mock AI Analysis Generator (replace with actual AI API)
-  const generateMockAnalysis = (text) => {
-    return {
-      summary: `AI-generated intelligence summary based on the voice capture. The analysis detected market signals related to general aviation intelligence. Key patterns identified suggest significant market movements in the coming weeks.`,
-
-      keywords: [
-        'fleet expansion',
-        'pilot shortage',
-        'market growth',
-        'operational efficiency',
-        'regulatory compliance'
-      ].slice(0, 3 + Math.floor(Math.random() * 3)),
-
-      themes: [
-        'Hiring / Firing',
-        'Market Competition',
-        'Pilot Training Demand'
-      ].slice(0, 1 + Math.floor(Math.random() * 2)),
-
-      marketSignals: [
-        { signal: 'Increased pilot demand indicators', strength: 'Strong', trend: 'up' },
-        { signal: 'Fleet expansion announcements expected', strength: 'Moderate', trend: 'up' },
-        { signal: 'Training capacity constraints', strength: 'Moderate', trend: 'stable' }
-      ],
-
-      sentiment: {
-        overall: 'Positive',
-        score: 0.72,
-        breakdown: {
-          positive: 65,
-          neutral: 25,
-          negative: 10
-        }
-      },
-
-      confidenceScore: 0.85,
-
-      predictiveProbabilities: [
-        { event: 'Hiring surge in Q1', probability: 78 },
-        { event: 'New aircraft orders', probability: 65 },
-        { event: 'Regulatory changes', probability: 42 }
-      ],
-
-      airlineSpecifications: [
-        { airline: 'Indigo', relevance: 'High', signals: ['Expansion', 'Hiring'] },
-        { airline: 'Air India', relevance: 'Medium', signals: ['Fleet upgrade'] },
-        { airline: 'SpiceJet', relevance: 'Low', signals: ['Operational'] }
-      ],
-
-      timestamp: new Date().toISOString(),
-      originalTheme: null
-    }
   }
 
   return (
@@ -148,18 +121,62 @@ export default function VoiceCapturePage() {
               Transcription
             </h2>
             <div className={styles.transcriptionBox}>
-              <p>{transcription.transcription}</p>
+              <p>
+                {(() => {
+                  const text = transcription.transcription || ''
+                  const keywords = aiAnalysis?.keywords || []
+                  if (!keywords || keywords.length === 0) return text
+                  
+                  // Sort keywords by length (longer first) to avoid partial matches
+                  const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length)
+                  
+                  // Create regex pattern
+                  const pattern = new RegExp(
+                    `\\b(${sortedKeywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+                    'gi'
+                  )
+                  
+                  const parts = []
+                  let lastIndex = 0
+                  let match
+                  
+                  while ((match = pattern.exec(text)) !== null) {
+                    if (match.index > lastIndex) {
+                      parts.push(text.substring(lastIndex, match.index))
+                    }
+                    parts.push(
+                      <mark key={match.index} style={{
+                        background: 'rgba(74, 222, 128, 0.3)',
+                        color: '#4ade80',
+                        padding: '2px 4px',
+                        borderRadius: '4px',
+                        fontWeight: '600',
+                        border: '1px solid rgba(74, 222, 128, 0.5)'
+                      }}>
+                        {match[0]}
+                      </mark>
+                    )
+                    lastIndex = pattern.lastIndex
+                  }
+                  
+                  if (lastIndex < text.length) {
+                    parts.push(text.substring(lastIndex))
+                  }
+                  
+                  return parts.length > 0 ? parts : text
+                })()}
+              </p>
             </div>
           </div>
         )}
 
         {/* AI Analysis Loading */}
-        {isAnalyzing && (
+        {(isAnalyzing || (transcription && !aiAnalysis)) && (
           <div className={styles.analyzingSection}>
             <div className={styles.analyzingCard}>
               <div className={styles.analyzingSpinner}></div>
-              <h3>Analyzing with AI...</h3>
-              <p>Extracting intelligence signals, keywords, and market predictions</p>
+              <h3>Processing with AI...</h3>
+              <p>Transcribing audio and extracting intelligence signals, keywords, and market predictions</p>
             </div>
           </div>
         )}
