@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     
     # API Keys
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
+    newsapi_key: str = os.getenv("NEWSAPI_KEY", "")
     
     # Server Configuration
     api_host: str = os.getenv("API_HOST", "0.0.0.0")
@@ -30,6 +31,9 @@ class Settings(BaseSettings):
     # AI Model Configuration
     transcription_model: str = os.getenv("TRANSCRIPTION_MODEL", "whisper-1")
     analysis_model: str = os.getenv("ANALYSIS_MODEL", "gpt-4o")
+    
+    # News Correlation Configuration
+    correlation_enabled: bool = os.getenv("CORRELATION_ENABLED", "true").lower() == "true"
     
     class Config:
         """Pydantic config."""

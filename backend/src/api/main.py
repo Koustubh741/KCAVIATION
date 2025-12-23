@@ -196,3 +196,55 @@ async def analyze_text(
             detail=f"Failed to analyze text: {str(e)}"
         )
 
+
+@app.post("/api/correlate")
+async def correlate_transcript(
+    transcript: str = Form(...),
+    airlines: Optional[str] = Form(None),
+    themes: Optional[str] = Form(None)
+):
+    """
+    Correlate a transcript with news articles.
+    
+    Args:
+        transcript: Raw transcript text
+        airlines: Comma-separated airline names
+        themes: Comma-separated themes
+        
+    Returns:
+        Correlation results with matched news articles
+    """
+    if not analysis_service:
+        raise HTTPException(status_code=503, detail="Analysis service not available")
+    
+    try:
+        from src.services.news_correlation import NewsCorrelationService
+        from src.services.correlation import CorrelationEngine
+        
+        news_service = NewsCorrelationService()
+        correlation_engine = CorrelationEngine()
+        
+        airline_list = [a.strip() for a in airlines.split(",")] if airlines else []
+        theme_list = [t.strip() for t in themes.split(",")] if themes else []
+        
+        # Search news
+        search_query = f"{' '.join(theme_list)} {' '.join(airline_list)}"
+        news_articles = await news_service.search_aviation_news(
+            query=search_query,
+            airlines=airline_list if airline_list else None,
+            max_results=20
+        )
+        
+        # Correlate
+        correlation = await correlation_engine.correlate_transcript_with_news(
+            transcript,
+            news_articles,
+            airline_list,
+            theme_list
+        )
+        
+        return JSONResponse(correlation)
+    except Exception as e:
+        logger.error(f"Correlation failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Correlation failed: {str(e)}")
+

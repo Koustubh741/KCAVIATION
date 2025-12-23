@@ -2,6 +2,7 @@
 
 import styles from './AIAnalysisResult.module.css'
 import Card from '../../components/Card'
+import NewsCorrelation from './NewsCorrelation'
 
 export default function AIAnalysisResult({ analysis }) {
     if (!analysis) return null
@@ -21,7 +22,8 @@ export default function AIAnalysisResult({ analysis }) {
         timestamp: analysis.timestamp || new Date().toISOString(),
         originalTheme: analysis.originalTheme || null,
         airlineThemeMap: analysis.airlineThemeMap || {},
-        themeAirlineMap: analysis.themeAirlineMap || {}
+        themeAirlineMap: analysis.themeAirlineMap || {},
+        correlation: analysis.correlation || null
     }
 
     const getSentimentColor = (sentiment) => {
@@ -347,6 +349,11 @@ export default function AIAnalysisResult({ analysis }) {
                     )}
                 </div>
             ) : null}
+
+            {/* News Correlation */}
+            {safeAnalysis.correlation && (
+                <NewsCorrelation correlation={safeAnalysis.correlation} />
+            )}
 
             {/* Timestamp */}
             <div className={styles.timestamp}>

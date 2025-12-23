@@ -71,12 +71,52 @@ export default function UpdatesPage() {
                 (r.theme || '').toLowerCase().includes('financial')
             )
 
+            // Calculate news correlation statistics
+            const recordsWithCorrelation = userRecords.filter(r => r.correlation && r.correlation.correlationScore > 0)
+            let avgCorrelationScore = 0
+            let verifiedCount = 0
+            let partialCount = 0
+            let unverifiedCount = 0
+
+            if (recordsWithCorrelation.length > 0) {
+                avgCorrelationScore = recordsWithCorrelation.reduce((sum, r) => {
+                    return sum + (r.correlation?.correlationScore || 0)
+                }, 0) / recordsWithCorrelation.length
+
+                verifiedCount = recordsWithCorrelation.filter(r => 
+                    r.correlation?.verificationStatus === 'verified'
+                ).length
+                partialCount = recordsWithCorrelation.filter(r => 
+                    r.correlation?.verificationStatus === 'partial'
+                ).length
+                unverifiedCount = recordsWithCorrelation.filter(r => 
+                    r.correlation?.verificationStatus === 'unverified'
+                ).length
+            }
+
+            // Determine overall correlation status
+            let correlationStatus = 'Insufficient data for correlation'
+            if (recordsWithCorrelation.length > 0) {
+                if (avgCorrelationScore >= 0.8) {
+                    correlationStatus = 'Strong correlation detected'
+                } else if (avgCorrelationScore >= 0.5) {
+                    correlationStatus = 'Partial correlation detected'
+                } else {
+                    correlationStatus = 'Weak correlation detected'
+                }
+            }
+
             setCorrelationData({
                 hiringCount: hiringRecords.length,
                 expansionCount: expansionRecords.length,
                 financialCount: financialRecords.length,
                 totalRecords: userRecords.length,
-                correlation: userRecords.length > 5 ? 'Strong correlation detected' : 'Insufficient data for correlation'
+                correlation: correlationStatus,
+                avgCorrelationScore: avgCorrelationScore,
+                verifiedCount: verifiedCount,
+                partialCount: partialCount,
+                unverifiedCount: unverifiedCount,
+                totalWithCorrelation: recordsWithCorrelation.length
             })
         } else {
             setCorrelationData(null)
@@ -148,7 +188,25 @@ export default function UpdatesPage() {
                             <div className={styles.correlationContent}>
                                 {correlationData ? (
                                     <>
-                                        <p>{correlationData.correlation}</p>
+                                        <div style={{ marginBottom: '15px' }}>
+                                            <p style={{ marginBottom: '8px', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)' }}>
+                                                {correlationData.correlation}
+                                            </p>
+                                            {correlationData.totalWithCorrelation > 0 && (
+                                                <div style={{ 
+                                                    display: 'flex', 
+                                                    gap: '15px', 
+                                                    fontSize: '0.85rem',
+                                                    color: 'rgba(255,255,255,0.6)',
+                                                    marginTop: '10px',
+                                                    flexWrap: 'wrap'
+                                                }}>
+                                                    <span>Avg Score: <strong style={{ color: '#4ade80' }}>{(correlationData.avgCorrelationScore * 100).toFixed(0)}%</strong></span>
+                                                    <span>Verified: <strong style={{ color: '#4ade80' }}>{correlationData.verifiedCount}</strong></span>
+                                                    <span>Partial: <strong style={{ color: '#fbbf24' }}>{correlationData.partialCount}</strong></span>
+                                                </div>
+                                            )}
+                                        </div>
                                         <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                             <div>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
