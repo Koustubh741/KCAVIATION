@@ -13,6 +13,9 @@ from src.services.analysis import AnalysisService
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Log when routes are registered (for debugging)
+logger.info("Loading API routes...")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="KCAVIATION Voice Intelligence API",
@@ -132,9 +135,9 @@ async def transcribe_audio(
                 (spec for spec in analysis.get("airlineSpecifications", []) if spec.get("isPrimary")),
                 analysis.get("airlineSpecifications", [{}])[0]
             )
-            primary_airline = primary_spec.get("airline", "Unknown")
+            primary_airline = primary_spec.get("airline", settings.default_unknown_airline)
         elif not primary_airline:
-            primary_airline = "Unknown"
+            primary_airline = settings.default_unknown_airline
         
         # Return combined result
         return JSONResponse({
@@ -196,6 +199,80 @@ async def analyze_text(
             detail=f"Failed to analyze text: {str(e)}"
         )
 
+
+@app.get("/api/news")
+async def get_aviation_news(
+    airline: Optional[str] = None,
+    theme: Optional[str] = None,
+    days: int = 7,
+    max_results: int = 50
+):
+    """
+    Fetch aviation news filtered by airline, theme, and date range.
+    
+    Args:
+        airline: Optional airline name to filter
+        theme: Optional theme to filter
+        days: Number of days back (7 or 30)
+        max_results: Maximum articles to return
+        
+    Returns:
+        List of news articles with metadata
+    """
+    try:
+        from src.services.news_correlation import NewsCorrelationService
+        from datetime import datetime, timedelta
+        
+        news_service = NewsCorrelationService()
+        
+        # Calculate date range
+        date_to = datetime.now()
+        date_from = date_to - timedelta(days=days)
+        
+        # Build search query
+        query_parts = []
+        airlines_list = []
+        
+        if airline:
+            airlines_list = [airline.strip()]
+            query_parts.append(airline)
+        
+        if theme:
+            query_parts.append(theme)
+        
+        # If no filters, use general aviation keywords
+        if not query_parts:
+            query = "aviation airline"
+        else:
+            query = " ".join(query_parts)
+        
+        # Fetch news
+        articles = await news_service.search_aviation_news(
+            query=query,
+            airlines=airlines_list if airlines_list else None,
+            date_from=date_from,
+            date_to=date_to,
+            max_results=max_results
+        )
+        
+        return JSONResponse({
+            "articles": articles,
+            "count": len(articles),
+            "dateRange": {
+                "from": date_from.isoformat(),
+                "to": date_to.isoformat(),
+                "days": days
+            }
+        })
+    except Exception as e:
+        logger.error(f"Failed to fetch aviation news: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch news: {str(e)}"
+        )
+
+# Log that news route is registered
+logger.info("✓ Route GET /api/news registered")
 
 @app.post("/api/correlate")
 async def correlate_transcript(

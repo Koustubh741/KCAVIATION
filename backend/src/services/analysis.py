@@ -306,6 +306,61 @@ Respond with ONLY the airline name that is the primary subject of this text. If 
             # Fallback to highest scored airline
             return detected_airlines[0] if detected_airlines else None
     
+    def _is_valid_airline_name(self, name: str) -> bool:
+        """
+        Validate if an airline name is valid (not an error message or invalid text).
+        
+        Args:
+            name: Airline name to validate
+            
+        Returns:
+            True if valid, False otherwise
+        """
+        if not name or not isinstance(name, str):
+            return False
+        
+        name_lower = name.lower().strip()
+        
+        # Filter out error messages and invalid text
+        invalid_patterns = [
+            "no airline",
+            "there are no",
+            "not mentioned",
+            "no specific",
+            "cannot identify",
+            "unable to",
+            "none",
+            "n/a",
+            "na",
+            "unknown",
+            "not found",
+            "not detected",
+            "no airlines",
+            "no airline names",
+            "provided text",
+            "mentioned in",
+            "the provided"
+        ]
+        
+        # Check if name contains any invalid pattern
+        for pattern in invalid_patterns:
+            if pattern in name_lower:
+                return False
+        
+        # Filter out names that are too long (likely error messages)
+        if len(name) > 50:
+            return False
+        
+        # Filter out names that look like sentences (contain multiple words with "the", "are", "in", etc.)
+        sentence_words = ["the", "are", "in", "of", "to", "for", "with", "from", "this", "that"]
+        words = name_lower.split()
+        if len(words) > 5:  # Too many words, likely a sentence
+            return False
+        if len(words) > 2 and any(word in sentence_words for word in words):
+            return False
+        
+        return True
+    
     def _parse_ai_response(
         self,
         ai_response: str,
@@ -333,6 +388,13 @@ Respond with ONLY the airline name that is the primary subject of this text. If 
         # Build airline-theme relationships (One-to-Many and Many-to-One)
         # Ensure we have valid airlines and themes
         valid_airlines = [a for a in airlines if a and isinstance(a, dict) and a.get("airline")]
+        
+        # Filter out invalid airline names
+        valid_airlines = [
+            a for a in valid_airlines 
+            if self._is_valid_airline_name(a.get("airline", ""))
+        ]
+        
         valid_themes = [t for t in themes if t and isinstance(t, str) and t.strip()]
         
         # If no airlines detected, try to extract from AI response
@@ -348,12 +410,12 @@ Analysis: "{ai_response[:1000]}"
 
 Original text: "{transcription[:500]}"
 
-Return airline names only:"""
-                
+Return airline names only. If no airlines are mentioned, return nothing (empty response)."""
+
                 extraction_response = self.client.chat.completions.create(
                     model=self.model,
                     messages=[
-                        {"role": "system", "content": "Extract airline names from text. Return only airline names, one per line."},
+                        {"role": "system", "content": "Extract airline names from text. Return only airline names, one per line. If no airlines are mentioned, return nothing."},
                         {"role": "user", "content": extraction_prompt}
                     ],
                     temperature=0.2,
@@ -363,13 +425,16 @@ Return airline names only:"""
                 extracted_text = extraction_response.choices[0].message.content.strip()
                 airline_names = [line.strip() for line in extracted_text.split('\n') if line.strip()]
                 
-                # Convert to airline dicts
+                # Convert to airline dicts with validation
                 from src.config.airlines import _normalize_airline_name
                 for name in airline_names[:5]:
                     if not name:
                         continue
+                    # Validate before normalizing
+                    if not self._is_valid_airline_name(name):
+                        continue
                     normalized = _normalize_airline_name(name)
-                    if normalized:
+                    if normalized and self._is_valid_airline_name(normalized):
                         valid_airlines.append({
                             "airline": normalized,
                             "relevance": "Medium",
@@ -431,6 +496,16 @@ Return airline names only:"""
                     # If no themes found, try to infer from detected themes
                     spec["themes"] = valid_themes[:2] if valid_themes else []
         
+        # Ensure we have valid airlines list (filter out invalid names)
+        valid_airline_names = [
+            a.get("airline") for a in valid_airlines[:5] 
+            if a and isinstance(a, dict) and self._is_valid_airline_name(a.get("airline", ""))
+        ]
+        
+        # If no valid airlines, set to default
+        if not valid_airline_names:
+            valid_airline_names = [settings.default_unknown_airline]
+        
         return {
             "summary": summary,  # Already cleaned and limited
             "keywords": keywords[:12],  # Increased to 12 keywords
@@ -440,8 +515,8 @@ Return airline names only:"""
             "confidenceScore": 0.85,
             "predictiveProbabilities": predictive_probabilities[:5],
             "airlineSpecifications": airline_specs,
-            "primaryAirline": primary_airline.get("airline") if primary_airline else None,
-            "allAirlines": [a.get("airline") for a in airlines[:5]],
+            "primaryAirline": primary_airline.get("airline") if primary_airline and self._is_valid_airline_name(primary_airline.get("airline", "")) else settings.default_unknown_airline,
+            "allAirlines": valid_airline_names,
             "timestamp": datetime.now().isoformat(),
             "originalTheme": themes[0] if themes else None,
             # New: Airline-Theme relationships
@@ -796,6 +871,12 @@ Return airline names only:"""
         """Build airline specifications from detected airlines."""
         specs = []
         
+        # Filter out invalid airline names
+        valid_airlines = [
+            a for a in airlines 
+            if a and isinstance(a, dict) and a.get("airline") and self._is_valid_airline_name(a.get("airline", ""))
+        ]
+        
         # Safely extract primary airline name
         primary_airline_name = None
         if primary_airline:
@@ -804,13 +885,13 @@ Return airline names only:"""
             elif isinstance(primary_airline, str):
                 primary_airline_name = primary_airline.lower()
         
-        for airline in airlines[:5]:
+        for airline in valid_airlines[:5]:
             # Safely extract airline name
             if not isinstance(airline, dict):
                 continue
                 
             airline_name = airline.get("airline", "")
-            if not airline_name:
+            if not airline_name or not self._is_valid_airline_name(airline_name):
                 continue
             
             airline_lower = airline_name.lower()
@@ -836,6 +917,17 @@ Return airline names only:"""
                 "mentionCount": airline.get("mention_count", 0)
             })
         
+        # If no valid airlines found, add default
+        if not specs:
+            specs.append({
+                "airline": settings.default_unknown_airline,
+                "relevance": "Low",
+                "isPrimary": True,
+                "signals": ["General"],
+                "score": 0.0,
+                "mentionCount": 0
+            })
+        
         # Sort by primary first, then by score
         specs.sort(key=lambda x: (not x.get("isPrimary", False), -x.get("score", 0)), reverse=True)
         return specs
@@ -852,8 +944,11 @@ Return airline names only:"""
         summary = self._generate_fallback_summary(transcription)
         
         # Build airline-theme relationships
-        # Ensure we have valid airlines and themes
-        valid_airlines = [a for a in airlines if a and isinstance(a, dict) and a.get("airline")]
+        # Ensure we have valid airlines and themes (filter out invalid names)
+        valid_airlines = [
+            a for a in airlines 
+            if a and isinstance(a, dict) and a.get("airline") and self._is_valid_airline_name(a.get("airline", ""))
+        ]
         valid_themes = [t for t in themes if t and isinstance(t, str) and t.strip()]
         
         airline_theme_map = {}
@@ -879,6 +974,16 @@ Return airline names only:"""
                     # If no themes found, try to infer from detected themes
                     spec["themes"] = valid_themes[:2] if valid_themes else []
         
+        # Ensure we have valid airlines list
+        valid_airline_names = [
+            a.get("airline") for a in valid_airlines[:5] 
+            if a and isinstance(a, dict) and self._is_valid_airline_name(a.get("airline", ""))
+        ]
+        
+        # If no valid airlines, set to default
+        if not valid_airline_names:
+            valid_airline_names = [settings.default_unknown_airline]
+        
         return {
             "summary": summary,
             "keywords": self._extract_keywords("", transcription),
@@ -894,8 +999,8 @@ Return airline names only:"""
             "confidenceScore": 0.6,
             "predictiveProbabilities": [],
             "airlineSpecifications": airline_specs,
-            "primaryAirline": primary_airline.get("airline") if primary_airline else None,
-            "allAirlines": [a.get("airline") for a in airlines[:5]],
+            "primaryAirline": primary_airline.get("airline") if primary_airline and self._is_valid_airline_name(primary_airline.get("airline", "")) else settings.default_unknown_airline,
+            "allAirlines": valid_airline_names,
             "timestamp": datetime.now().isoformat(),
             "originalTheme": themes[0] if themes else None,
             # New: Airline-Theme relationships

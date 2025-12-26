@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Card from '../../components/Card'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 import styles from './Dashboard.module.css'
 
 export default function Dashboard() {
@@ -13,6 +14,43 @@ export default function Dashboard() {
   })
 
   const [recordingHistory, setRecordingHistory] = useState([])
+
+  // Helper function to validate airline names
+  const isValidAirlineName = (name) => {
+    if (!name || typeof name !== 'string') return false
+    
+    const nameLower = name.toLowerCase().trim()
+    
+    // Filter out error messages and invalid text
+    const invalidPatterns = [
+      'no airline',
+      'there are no',
+      'not mentioned',
+      'no specific',
+      'cannot identify',
+      'unable to',
+      'provided text',
+      'mentioned in',
+      'the provided',
+      "i'm sorry",
+      'does not contain',
+      'sorry, but'
+    ]
+    
+    // Check if name contains any invalid pattern
+    for (const pattern of invalidPatterns) {
+      if (nameLower.includes(pattern)) {
+        return false
+      }
+    }
+    
+    // Filter out names that are too long (likely error messages)
+    if (name.length > 50) {
+      return false
+    }
+    
+    return true
+  }
   const [themePeriod, setThemePeriod] = useState('month') // day, week, month, quarter, year
   const [loading, setLoading] = useState(true)
 
@@ -65,11 +103,11 @@ export default function Dashboard() {
     const allAirlinesFromHistory = []
     history.forEach(r => {
       if (r.airlines && Array.isArray(r.airlines)) {
-        // New format: airlines is an array
-        allAirlinesFromHistory.push(...r.airlines)
+        // New format: airlines is an array - filter invalid names
+        allAirlinesFromHistory.push(...r.airlines.filter(a => isValidAirlineName(a)))
       } else if (r.airline) {
-        // Old format: airline is a string (may be comma-separated)
-        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && a !== 'Unknown Airline')
+        // Old format: airline is a string (may be comma-separated) - filter invalid names
+        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && isValidAirlineName(a))
         allAirlinesFromHistory.push(...airlines)
       }
     })
@@ -254,16 +292,35 @@ export default function Dashboard() {
   // Calculate airline activity
   const getAirlineActivity = () => {
     const airlineCounts = {}
+    let recordsWithNoValidAirlines = 0
+    
     recordingHistory.forEach(record => {
       // Extract individual airlines from both array and string formats
-      const airlines = record.airlines || (record.airline ? record.airline.split(',').map(a => a.trim()) : [])
+      let airlines = []
+      if (record.airlines && Array.isArray(record.airlines)) {
+        airlines = record.airlines.filter(a => isValidAirlineName(a))
+      } else if (record.airline) {
+        airlines = record.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a))
+      }
       
-      airlines.forEach(airline => {
-        if (airline && airline !== 'Unknown Airline') {
-          airlineCounts[airline] = (airlineCounts[airline] || 0) + 1
-        }
-      })
+      // Check if record has no valid airlines
+      const hasValidAirline = airlines.some(a => a && a !== DEFAULT_UNKNOWN_AIRLINE)
+      
+      if (!hasValidAirline) {
+        recordsWithNoValidAirlines++
+      } else {
+        airlines.forEach(airline => {
+          if (airline && airline !== DEFAULT_UNKNOWN_AIRLINE) {
+            airlineCounts[airline] = (airlineCounts[airline] || 0) + 1
+          }
+        })
+      }
     })
+    
+    // Add DEFAULT_UNKNOWN_AIRLINE if there are records with no valid airlines
+    if (recordsWithNoValidAirlines > 0) {
+      airlineCounts[DEFAULT_UNKNOWN_AIRLINE] = recordsWithNoValidAirlines
+    }
 
     return Object.entries(airlineCounts)
       .map(([airline, count]) => ({ airline, count }))
@@ -505,11 +562,18 @@ export default function Dashboard() {
                 </div>
                 <div className={styles.predictionInfo}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
-                    {(record.airlines || (record.airline ? record.airline.split(',').map(a => a.trim()) : [])).map((airline, idx) => (
-                      <span key={idx} className={styles.airlineBadge}>
-                        {airline.trim()}
-                      </span>
-                    ))}
+                    {(() => {
+                      let airlines = record.airlines || (record.airline ? record.airline.split(',').map(a => a.trim()) : [])
+                      airlines = airlines.filter(a => isValidAirlineName(a))
+                      if (airlines.length === 0) {
+                        airlines = [DEFAULT_UNKNOWN_AIRLINE]
+                      }
+                      return airlines.map((airline, idx) => (
+                        <span key={idx} className={styles.airlineBadge}>
+                          {airline.trim()}
+                        </span>
+                      ))
+                    })()}
                     {(record.themes || (record.theme ? record.theme.split(',').map(t => t.trim()) : [])).map((theme, idx) => (
                       <span key={idx} className={styles.themeBadge}>
                         {theme.trim()}

@@ -1,7 +1,44 @@
 import Card from '../../components/Card'
 import styles from './InsightsList.module.css'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 
 export default function InsightsList({ insights }) {
+    // Helper function to validate airline names
+    const isValidAirlineName = (name) => {
+        if (!name || typeof name !== 'string') return false
+        
+        const nameLower = name.toLowerCase().trim()
+        
+        // Filter out error messages and invalid text
+        const invalidPatterns = [
+            'no airline',
+            'there are no',
+            'not mentioned',
+            'no specific',
+            'cannot identify',
+            'unable to',
+            'provided text',
+            'mentioned in',
+            'the provided',
+            "i'm sorry",
+            'does not contain',
+            'sorry, but'
+        ]
+        
+        // Check if name contains any invalid pattern
+        for (const pattern of invalidPatterns) {
+            if (nameLower.includes(pattern)) {
+                return false
+            }
+        }
+        
+        // Filter out names that are too long (likely error messages)
+        if (name.length > 50) {
+            return false
+        }
+        
+        return true
+    }
   const getSentimentColor = (sentiment) => {
     switch (sentiment?.toLowerCase()) {
       case 'positive':
@@ -36,24 +73,43 @@ export default function InsightsList({ insights }) {
 
   return (
     <div className={styles.list}>
-      {insights.map((insight, index) => (
+      {insights.map((insight, index) => {
+        // Get themes - support both old format (string) and new format (array)
+        // Handle both comma-space and comma separators
+        const themes = insight.themes || (insight.theme ? insight.theme.split(',').map(t => t.trim()).filter(t => t) : [])
+        
+        return (
         <Card key={index} className={styles.insightCard}>
           <div className={styles.header}>
             <h3 className={styles.title}>{insight.transcription}</h3>
             <div className={styles.tags}>
-              <span
-                className={styles.tag}
-                style={{ backgroundColor: getThemeColor(insight.theme) + '20', color: getThemeColor(insight.theme) }}
-              >
-                {insight.theme}
-              </span>
+              {themes.length > 0 ? (
+                themes.map((theme, idx) => (
+                  <span
+                    key={idx}
+                    className={styles.tag}
+                    style={{ backgroundColor: getThemeColor(theme) + '20', color: getThemeColor(theme) }}
+                  >
+                    {theme.trim()}
+                  </span>
+                ))
+              ) : (
+                <span
+                  className={styles.tag}
+                  style={{ backgroundColor: getThemeColor(insight.theme) + '20', color: getThemeColor(insight.theme) }}
+                >
+                  {insight.theme || 'General'}
+                </span>
+              )}
               <span
                 className={styles.tag}
                 style={{ backgroundColor: getSentimentColor(insight.sentiment) + '20', color: getSentimentColor(insight.sentiment) }}
               >
                 {insight.sentiment}
               </span>
-              <span className={styles.airlineTag}>{insight.airline}</span>
+              <span className={styles.airlineTag}>
+                {insight.airline && isValidAirlineName(insight.airline) ? insight.airline : DEFAULT_UNKNOWN_AIRLINE}
+              </span>
             </div>
           </div>
           <div className={styles.footer}>
@@ -65,7 +121,8 @@ export default function InsightsList({ insights }) {
             </span>
           </div>
         </Card>
-      ))}
+        )
+      })}
     </div>
   )
 }

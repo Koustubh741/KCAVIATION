@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import VoiceRecorder from './VoiceRecorder'
 import AIAnalysisResult from './AIAnalysisResult'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 import styles from './page.module.css'
 
 export default function VoiceCapturePage() {
@@ -69,8 +70,9 @@ export default function VoiceCapturePage() {
         time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         date: now.toISOString().split('T')[0],
         // Save all airlines, not just the first one
-        airline: allAirlines.length > 0 ? allAirlines.join(', ') : (data.airline || 'Unknown Airline'),
-        airlines: allAirlines.length > 0 ? allAirlines : (data.airline ? [data.airline] : []),
+        // Filter out invalid airline names (error messages, etc.)
+        airline: allAirlines.length > 0 ? allAirlines.join(', ') : (data.airline && !data.airline.toLowerCase().includes('no airline') && !data.airline.toLowerCase().includes('not mentioned') ? data.airline : DEFAULT_UNKNOWN_AIRLINE),
+        airlines: allAirlines.length > 0 ? allAirlines : (data.airline && !data.airline.toLowerCase().includes('no airline') && !data.airline.toLowerCase().includes('not mentioned') ? [data.airline] : [DEFAULT_UNKNOWN_AIRLINE]),
         country: 'India', // Default for demo
         // Save all themes, not just the first one
         theme: allThemes.length > 0 ? allThemes.join(', ') : (data.theme || 'General'),
