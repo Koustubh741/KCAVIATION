@@ -7,6 +7,24 @@ import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 
 export default function AIAnalysisResult({ analysis }) {
     if (!analysis) return null
+    
+    // Ensure all required fields exist with defaults
+    const safeAnalysis = {
+        summary: analysis.summary || 'No summary available',
+        keywords: analysis.keywords || [],
+        themes: analysis.themes || [],
+        marketSignals: analysis.marketSignals || [],
+        sentiment: analysis.sentiment || { overall: 'Neutral', score: 0.5, breakdown: { positive: 33, neutral: 34, negative: 33 } },
+        confidenceScore: analysis.confidenceScore || 0.5,
+        predictiveProbabilities: analysis.predictiveProbabilities || [],
+        airlineSpecifications: analysis.airlineSpecifications || [],
+        primaryAirline: analysis.primaryAirline || null,
+        allAirlines: analysis.allAirlines || [],
+        timestamp: analysis.timestamp || new Date().toISOString(),
+        originalTheme: analysis.originalTheme || null,
+        airlineThemeMap: analysis.airlineThemeMap || {},
+        themeAirlineMap: analysis.themeAirlineMap || {}
+    }
 
     // Helper function to validate airline names
     const isValidAirlineName = (name) => {

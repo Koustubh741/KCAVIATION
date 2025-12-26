@@ -40,10 +40,6 @@ AIRLINE_KEYWORDS: Dict[str, List[str]] = {
     "Star Air": [
         "star air", "s5", "star air flights"
     ],
-    "SkyJet": [
-        "skyjet", "sky jet", "m8", "skyjet airlines", "skyjet air",
-        "skyjet flights", "skyjet fleet", "skyjet pilots", "magnum air"
-    ],
     "Emirates": [
         "emirates", "emirates airlines", "emirates air", 
         "emirates flights", "emirates fleet", "emirates pilots"
