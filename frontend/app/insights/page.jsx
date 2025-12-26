@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import styles from './page.module.css'
 import Card from '../../components/Card'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 
 export default function InsightsPage() {
   const [data, setData] = useState(null)
@@ -13,7 +14,47 @@ export default function InsightsPage() {
   // Modal State
   const [selectedRecord, setSelectedRecord] = useState(null)
   const [selectedAirline, setSelectedAirline] = useState(null)
+
+  // Helper function to validate airline names
+  const isValidAirlineName = (name) => {
+    if (!name || typeof name !== 'string') return false
+    
+    const nameLower = name.toLowerCase().trim()
+    
+    // Filter out error messages and invalid text
+    const invalidPatterns = [
+      'no airline',
+      'there are no',
+      'not mentioned',
+      'no specific',
+      'cannot identify',
+      'unable to',
+      'provided text',
+      'mentioned in',
+      'the provided',
+      "i'm sorry",
+      'does not contain',
+      'sorry, but'
+    ]
+    
+    // Check if name contains any invalid pattern
+    for (const pattern of invalidPatterns) {
+      if (nameLower.includes(pattern)) {
+        return false
+      }
+    }
+    
+    // Filter out names that are too long (likely error messages)
+    if (name.length > 50) {
+      return false
+    }
+    
+    return true
+  }
   const [activeTab, setActiveTab] = useState('overview')
+  
+  // Expanded summaries state
+  const [expandedSummaries, setExpandedSummaries] = useState({})
 
 
   // Search and Filter States
@@ -42,20 +83,50 @@ export default function InsightsPage() {
 
   // Calculate filter options from real data
   const calculateFilterOptions = (history) => {
-    const airlines = [...new Set(history.map(r => r.airline).filter(a => a && a !== 'Unknown Airline'))].sort()
-    const countries = [...new Set(history.map(r => r.country).filter(c => c))].sort()
-    const themes = [...new Set(history.map(r => r.theme).filter(t => t))].sort()
+    // Extract individual airlines (handle both array and comma-separated string formats)
+    const allAirlinesFromHistory = []
+    history.forEach(r => {
+      if (r.airlines && Array.isArray(r.airlines)) {
+        // New format: airlines is an array
+        allAirlinesFromHistory.push(...r.airlines)
+      } else if (r.airline) {
+        // Old format: airline is a string (may be comma-separated)
+        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+        allAirlinesFromHistory.push(...airlines)
+      }
+    })
+    const uniqueAirlines = [...new Set(allAirlinesFromHistory)].sort()
+    
+    // Fixed countries list: India, Philippines, Indonesia
+    const countries = ['India', 'Philippines', 'Indonesia']
+    
+    // Extract all themes from history (handle both string and array formats)
+    const allThemesFromHistory = []
+    history.forEach(r => {
+      if (r.themes && Array.isArray(r.themes)) {
+        // New format: themes is an array
+        allThemesFromHistory.push(...r.themes)
+      } else if (r.theme) {
+        // Old format: theme is a string (may be comma-separated)
+        const themes = r.theme.split(',').map(t => t.trim()).filter(t => t)
+        allThemesFromHistory.push(...themes)
+      }
+    })
+    const uniqueThemesFromHistory = [...new Set(allThemesFromHistory)].sort()
+    
+    // Always merge with BACKEND_THEMES to ensure all backend themes are available
+    const allThemes = [...new Set([...BACKEND_THEMES, ...uniqueThemesFromHistory])].sort()
     
     return {
-      airlines: airlines.length > 0 ? airlines : [],
-      countries: countries.length > 0 ? countries : ['India'],
-      themes: themes.length > 0 ? themes : BACKEND_THEMES
+      airlines: uniqueAirlines.length > 0 ? uniqueAirlines : [],
+      countries: countries,
+      themes: allThemes
     }
   }
 
   const [filterOptions, setFilterOptions] = useState({
     airlines: [],
-    countries: ['India'],
+    countries: ['India', 'Philippines', 'Indonesia'],
     themes: BACKEND_THEMES
   })
 
@@ -71,6 +142,19 @@ export default function InsightsPage() {
   const handleCloseModal = () => {
     setSelectedRecord(null)
   }
+  
+  // Helper functions for summary expansion
+  const toggleSummary = (index) => {
+    setExpandedSummaries(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }))
+  }
+  
+  const truncateText = (text, maxLength = 150) => {
+    if (!text || text.length <= maxLength) return text
+    return text.substring(0, maxLength) + '...'
+  }
 
   // Filtered Data Logic
   const filteredHistory = data?.recordingHistory?.filter(item => {
@@ -85,9 +169,21 @@ export default function InsightsPage() {
       (item.transcript || '').toLowerCase().includes(searchLower)
 
     // Filters
-    const matchesAirline = !filters.airline || item.airline === filters.airline
+    // Check airline match - support both array and string formats
+    const itemAirlines = item.airlines || (item.airline ? item.airline.split(',').map(a => a.trim()) : [])
+    const matchesAirline = !filters.airline || 
+      item.airline === filters.airline || 
+      (itemAirlines && itemAirlines.includes(filters.airline))
+    
     const matchesCountry = !filters.country || item.country === filters.country
-    const matchesTheme = !filters.theme || item.theme === filters.theme
+    
+    // Check theme match - support both array and string formats
+    const itemThemes = item.themes || (item.theme ? item.theme.split(',').map(t => t.trim()) : [])
+    const matchesTheme = !filters.theme || 
+      item.theme === filters.theme || 
+      (itemThemes && itemThemes.includes(filters.theme)) ||
+      (item.theme && item.theme.includes(filters.theme))
+    
     const matchesDate = !filters.date || item.date === filters.date
 
     return matchesSearch && matchesAirline && matchesCountry && matchesTheme && matchesDate
@@ -118,7 +214,22 @@ export default function InsightsPage() {
     const today = new Date().toISOString().split('T')[0]
     const todayRecords = history.filter(r => r.date === today)
     
-    const uniqueAirlines = [...new Set(history.map(r => r.airline).filter(a => a && a !== 'Unknown Airline'))]
+    // Extract individual airlines (handle both array and comma-separated string formats)
+    // Filter out invalid airline names and DEFAULT_UNKNOWN_AIRLINE from unique list
+    const allAirlinesFromHistory = []
+    history.forEach(r => {
+      if (r.airlines && Array.isArray(r.airlines)) {
+        // New format: airlines is an array - filter invalid names
+        const validAirlines = r.airlines.filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+        allAirlinesFromHistory.push(...validAirlines)
+      } else if (r.airline) {
+        // Old format: airline is a string (may be comma-separated) - filter invalid names
+        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+        allAirlinesFromHistory.push(...airlines)
+      }
+    })
+    // Only include valid airline names (exclude DEFAULT_UNKNOWN_AIRLINE from unique list)
+    const uniqueAirlines = [...new Set(allAirlinesFromHistory)].sort()
     
     // Count high-risk alerts (negative signals)
     const highRiskAlerts = history.filter(r => {
@@ -135,8 +246,54 @@ export default function InsightsPage() {
     }
 
     // Calculate airline signals
-    const airlineSignals = uniqueAirlines.map(airline => {
-      const airlineRecords = history.filter(r => r.airline === airline)
+    // First, find records with no valid airlines and group them under DEFAULT_UNKNOWN_AIRLINE
+    const recordsWithNoValidAirlines = history.filter(r => {
+      let hasValidAirline = false
+      if (r.airlines && Array.isArray(r.airlines)) {
+        hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+      } else if (r.airline) {
+        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+        hasValidAirline = airlines.length > 0
+      }
+      return !hasValidAirline
+    })
+    
+    // Add DEFAULT_UNKNOWN_AIRLINE to uniqueAirlines if there are records with no valid airlines
+    const airlinesForSignals = recordsWithNoValidAirlines.length > 0 
+      ? [...uniqueAirlines, DEFAULT_UNKNOWN_AIRLINE]
+      : uniqueAirlines
+    
+    // Filter out any invalid airline names from airlinesForSignals before mapping
+    const validAirlinesForSignals = airlinesForSignals.filter(airline => 
+      airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(airline)
+    )
+    
+    const airlineSignals = validAirlinesForSignals.map(airline => {
+      // Filter records that contain this specific airline
+      const airlineRecords = history.filter(r => {
+        if (airline === DEFAULT_UNKNOWN_AIRLINE) {
+          // For DEFAULT_UNKNOWN_AIRLINE, match records with no valid airlines
+          let hasValidAirline = false
+          if (r.airlines && Array.isArray(r.airlines)) {
+            hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+            hasValidAirline = airlines.length > 0
+          }
+          return !hasValidAirline
+        } else {
+          // For valid airlines, check if record contains this airline
+          if (r.airlines && Array.isArray(r.airlines)) {
+            // Filter invalid names from array before checking
+            const validAirlines = r.airlines.filter(a => isValidAirlineName(a))
+            return validAirlines.includes(airline)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a))
+            return airlines.includes(airline)
+          }
+        }
+        return false
+      })
       const positiveCount = airlineRecords.filter(r => 
         (r.signal || '').toLowerCase().includes('positive')
       ).length
@@ -267,35 +424,119 @@ export default function InsightsPage() {
     })
 
     // Calculate heatmap data
-    const heatmapData = uniqueAirlines.map(airline => {
-      const airlineRecords = history.filter(r => r.airline === airline)
+    // Use same airlines list as airlineSignals (includes DEFAULT_UNKNOWN_AIRLINE if needed)
+    const airlinesForHeatmap = recordsWithNoValidAirlines.length > 0 
+      ? [...uniqueAirlines, DEFAULT_UNKNOWN_AIRLINE]
+      : uniqueAirlines
+    
+    // Filter out any invalid airline names from airlinesForHeatmap before mapping
+    const validAirlinesForHeatmap = airlinesForHeatmap.filter(airline => 
+      airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(airline)
+    )
+    
+    const heatmapData = validAirlinesForHeatmap.map(airline => {
+      // Filter records that contain this specific airline
+      const airlineRecords = history.filter(r => {
+        if (airline === DEFAULT_UNKNOWN_AIRLINE) {
+          // For DEFAULT_UNKNOWN_AIRLINE, match records with no valid airlines
+          let hasValidAirline = false
+          if (r.airlines && Array.isArray(r.airlines)) {
+            hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+            hasValidAirline = airlines.length > 0
+          }
+          return !hasValidAirline
+        } else {
+          // For valid airlines, check if record contains this airline
+          if (r.airlines && Array.isArray(r.airlines)) {
+            // Filter invalid names from array before checking
+            const validAirlines = r.airlines.filter(a => isValidAirlineName(a))
+            return validAirlines.includes(airline)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a))
+            return airlines.includes(airline)
+          }
+        }
+        return false
+      })
       
-      const calculateThemeScore = (themeKeyword) => {
+      // Calculate score for each backend theme (exact match)
+      const calculateThemeScore = (themeName) => {
         const matching = airlineRecords.filter(r => {
-          const theme = (r.theme || '').toLowerCase()
-          return theme.includes(themeKeyword.toLowerCase())
+          // Check both theme formats (array and string)
+          if (r.themes && Array.isArray(r.themes)) {
+            return r.themes.some(t => t.trim() === themeName)
+          } else if (r.theme) {
+            // Handle comma-separated themes
+            const themes = r.theme.split(',').map(t => t.trim())
+            return themes.includes(themeName)
+          }
+          return false
         }).length
         return airlineRecords.length > 0 
           ? Math.round((matching / airlineRecords.length) * 100)
           : 0
       }
       
+      // Create object with all backend themes as keys (using theme name directly)
+      const themeScores = {}
+      BACKEND_THEMES.forEach(theme => {
+        themeScores[theme] = calculateThemeScore(theme)
+      })
+      
       return {
         airline,
-        hiring: calculateThemeScore('hiring'),
-        training: calculateThemeScore('training'),
-        fleet: calculateThemeScore('fleet'),
-        finance: calculateThemeScore('financial'),
-        operations: calculateThemeScore('operational')
+        ...themeScores
       }
     })
 
     // Calculate airline insights
-    const airlineInsights = uniqueAirlines.map(airline => {
-      const airlineRecords = history.filter(r => r.airline === airline)
-      const hiringRecords = airlineRecords.filter(r => 
-        (r.theme || '').toLowerCase().includes('hiring')
-      )
+    // Use same airlines list as airlineSignals (includes DEFAULT_UNKNOWN_AIRLINE if needed)
+    const airlinesForInsights = recordsWithNoValidAirlines.length > 0 
+      ? [...uniqueAirlines, DEFAULT_UNKNOWN_AIRLINE]
+      : uniqueAirlines
+    
+    // Filter out any invalid airline names from airlinesForInsights before mapping
+    const validAirlinesForInsights = airlinesForInsights.filter(airline => 
+      airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(airline)
+    )
+    
+    const airlineInsights = validAirlinesForInsights.map(airline => {
+      // Filter records that contain this specific airline
+      const airlineRecords = history.filter(r => {
+        if (airline === DEFAULT_UNKNOWN_AIRLINE) {
+          // For DEFAULT_UNKNOWN_AIRLINE, match records with no valid airlines
+          let hasValidAirline = false
+          if (r.airlines && Array.isArray(r.airlines)) {
+            hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+            hasValidAirline = airlines.length > 0
+          }
+          return !hasValidAirline
+        } else {
+          // For valid airlines, check if record contains this airline
+          if (r.airlines && Array.isArray(r.airlines)) {
+            // Filter invalid names from array before checking
+            const validAirlines = r.airlines.filter(a => isValidAirlineName(a))
+            return validAirlines.includes(airline)
+          } else if (r.airline) {
+            const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a))
+            return airlines.includes(airline)
+          }
+        }
+        return false
+      })
+      const hiringRecords = airlineRecords.filter(r => {
+        // Check both theme formats
+        if (r.themes && Array.isArray(r.themes)) {
+          return r.themes.some(t => t.toLowerCase().includes('hiring'))
+        } else if (r.theme) {
+          return (r.theme || '').toLowerCase().includes('hiring')
+        }
+        return false
+      })
       
       return {
         airline,
@@ -563,20 +804,74 @@ export default function InsightsPage() {
           </thead>
           <tbody>
             {filteredHistory.length > 0 ? (
-              filteredHistory.map((record, index) => (
-                <tr
-                  key={index}
-                  onClick={() => handleRowClick(record)}
-                  className={styles.clickableRow}
-                >
-                  <td>{record.time}</td>
-                  <td>{record.date}</td>
-                  <td>{record.airline}</td>
-                  <td>{record.country}</td>
-                  <td><span className={styles.themeBadge}>{record.theme}</span></td>
-                  <td>{record.summary}</td>
-                </tr>
-              ))
+              filteredHistory.map((record, index) => {
+                const isExpanded = expandedSummaries[index]
+                const summary = record.summary || 'No summary available'
+                const shouldTruncate = summary.length > 150
+                const displaySummary = isExpanded || !shouldTruncate ? summary : truncateText(summary)
+                
+                // Get airlines - support both old format (string) and new format (array)
+                let airlines = record.airlines || (record.airline ? record.airline.split(', ').map(a => a.trim()) : [])
+                // Filter out invalid airline names
+                airlines = airlines.filter(airline => isValidAirlineName(airline))
+                // If no valid airlines after filtering, use default
+                if (airlines.length === 0) {
+                  airlines = [DEFAULT_UNKNOWN_AIRLINE]
+                }
+                // Get themes - support both old format (string) and new format (array)
+                // Handle both comma-space and comma separators
+                const themes = record.themes || (record.theme ? record.theme.split(',').map(t => t.trim()).filter(t => t) : [])
+                
+                return (
+                  <tr
+                    key={index}
+                    onClick={() => handleRowClick(record)}
+                    className={styles.clickableRow}
+                  >
+                    <td>{record.time}</td>
+                    <td>{record.date}</td>
+                    <td>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {airlines.map((airline, idx) => (
+                          <span key={idx} className={styles.airlineBadge}>
+                            {airline.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td>{record.country}</td>
+                    <td>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {themes.length > 0 ? (
+                          themes.map((theme, idx) => (
+                            <span key={idx} className={styles.themeBadge}>
+                              {theme.trim()}
+                            </span>
+                          ))
+                        ) : (
+                          <span className={styles.themeBadge}>{record.theme || 'General'}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ lineHeight: '1.6' }}>
+                        {displaySummary}
+                        {shouldTruncate && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleSummary(index)
+                            }}
+                            className={styles.moreButton}
+                          >
+                            {isExpanded ? ' -less' : ' +more'}
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
             ) : (
               <tr>
                 <td colSpan="6" style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '2rem' }}>
@@ -595,7 +890,11 @@ export default function InsightsPage() {
             <span>✈️</span> Airline Insights
           </h2>
           <div className={styles.airlineGrid}>
-            {data.airlineInsights.map((airline, index) => (
+            {data.airlineInsights
+              .filter(airline => 
+                airline.airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(airline.airline)
+              )
+              .map((airline, index) => (
               <div
                 key={index}
                 className={styles.airlineBox}
@@ -628,21 +927,78 @@ export default function InsightsPage() {
             </div>
             <div className={styles.modalBody}>
               <div className={styles.insightsList}>
-                {data.recordingHistory.filter(r => r.airline === selectedAirline).length > 0 ? (
+                {data.recordingHistory.filter(r => {
+                  // Check if record contains this specific airline
+                  if (selectedAirline === DEFAULT_UNKNOWN_AIRLINE) {
+                    // For DEFAULT_UNKNOWN_AIRLINE, match records with no valid airlines
+                    let hasValidAirline = false
+                    if (r.airlines && Array.isArray(r.airlines)) {
+                      hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+                    } else if (r.airline) {
+                      const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+                      hasValidAirline = airlines.length > 0
+                    }
+                    return !hasValidAirline
+                  } else {
+                    if (r.airlines && Array.isArray(r.airlines)) {
+                      return r.airlines.includes(selectedAirline)
+                    } else if (r.airline) {
+                      const airlines = r.airline.split(',').map(a => a.trim())
+                      return airlines.includes(selectedAirline)
+                    }
+                  }
+                  return false
+                }).length > 0 ? (
                   data.recordingHistory
-                    .filter(r => r.airline === selectedAirline)
-                    .map((record, index) => (
+                    .filter(r => {
+                      // Check if record contains this specific airline
+                      if (selectedAirline === DEFAULT_UNKNOWN_AIRLINE) {
+                        // For DEFAULT_UNKNOWN_AIRLINE, match records with no valid airlines
+                        let hasValidAirline = false
+                        if (r.airlines && Array.isArray(r.airlines)) {
+                          hasValidAirline = r.airlines.some(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+                        } else if (r.airline) {
+                          const airlines = r.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+                          hasValidAirline = airlines.length > 0
+                        }
+                        return !hasValidAirline
+                      } else {
+                        if (r.airlines && Array.isArray(r.airlines)) {
+                          return r.airlines.includes(selectedAirline)
+                        } else if (r.airline) {
+                          const airlines = r.airline.split(',').map(a => a.trim())
+                          return airlines.includes(selectedAirline)
+                        }
+                      }
+                      return false
+                    })
+                    .map((record, index) => {
+                      // Get themes - support both old format (string) and new format (array)
+                      // Handle both comma-space and comma separators
+                      const themes = record.themes || (record.theme ? record.theme.split(',').map(t => t.trim()).filter(t => t) : [])
+                      
+                      return (
                       <div key={index} className={styles.insightItem} onClick={() => {
                         setSelectedAirline(null);
                         handleRowClick(record);
                       }}>
                         <div className={styles.insightHeader}>
                           <span className={styles.insightDate}>{record.date} • {record.time}</span>
-                          <span className={styles.themeBadge}>{record.theme}</span>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                            {themes.length > 0 ? (
+                              themes.map((theme, idx) => (
+                                <span key={idx} className={styles.themeBadge}>
+                                  {theme.trim()}
+                                </span>
+                              ))
+                            ) : (
+                              <span className={styles.themeBadge}>{record.theme || 'General'}</span>
+                            )}
+                          </div>
                         </div>
                         <p className={styles.insightSummary}>{record.summary}</p>
                       </div>
-                    ))
+                    )})
                 ) : (
                   <p style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>No insights recorded for this airline yet.</p>
                 )}
@@ -693,11 +1049,28 @@ export default function InsightsPage() {
                   </div>
                   <div className={styles.detailItem}>
                     <label>Airline</label>
-                    <p>{selectedRecord.airline}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                      {(() => {
+                        const recordAirlines = (selectedRecord.airlines || (selectedRecord.airline ? selectedRecord.airline.split(',').map(a => a.trim()) : []))
+                          .filter(airline => isValidAirlineName(airline))
+                        const displayAirlines = recordAirlines.length > 0 ? recordAirlines : [DEFAULT_UNKNOWN_AIRLINE]
+                        return displayAirlines.map((airline, idx) => (
+                          <span key={idx} className={styles.airlineBadge}>
+                            {airline.trim()}
+                          </span>
+                        ))
+                      })()}
+                    </div>
                   </div>
                   <div className={styles.detailItem}>
                     <label>Theme</label>
-                    <span className={styles.themeBadge}>{selectedRecord.theme}</span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                      {(selectedRecord.themes || (selectedRecord.theme ? selectedRecord.theme.split(',').map(t => t.trim()) : [])).map((theme, idx) => (
+                        <span key={idx} className={styles.themeBadge}>
+                          {theme.trim()}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
                 </div>
@@ -761,7 +1134,11 @@ export default function InsightsPage() {
               <span>✈️</span> Airline-wise Signals
             </h2>
             <div className={styles.airlinesList}>
-              {data.airlineSignals.map((airline, index) => {
+              {data.airlineSignals
+                .filter(airline => 
+                  airline.airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(airline.airline)
+                )
+                .map((airline, index) => {
                 const maxSignals = Math.max(...data.airlineSignals.map(a => a.signals), 1)
                 const percentage = (airline.signals / maxSignals) * 100
                 
@@ -856,25 +1233,31 @@ export default function InsightsPage() {
           <div className={styles.heatmapContainer}>
             <div className={styles.heatmapHeader}>
               <div className={styles.heatmapCorner}></div>
-              {['Hiring', 'Training', 'Fleet', 'Finance', 'Operations'].map(header => (
-                <div key={header} className={styles.heatmapHeaderCell}>{header}</div>
+              {BACKEND_THEMES.map(theme => (
+                <div key={theme} className={styles.heatmapHeaderCell} title={theme}>
+                  {theme.length > 15 ? theme.substring(0, 12) + '...' : theme}
+                </div>
               ))}
             </div>
             <div className={styles.heatmapBody}>
-              {data.heatmapData.map((row, index) => (
+              {data.heatmapData
+                .filter(row => 
+                  row.airline === DEFAULT_UNKNOWN_AIRLINE || isValidAirlineName(row.airline)
+                )
+                .map((row, index) => (
                 <div key={index} className={styles.heatmapRow}>
                   <div className={styles.heatmapRowLabel}>{row.airline}</div>
-                  {['hiring', 'training', 'fleet', 'finance', 'operations'].map(key => (
+                  {BACKEND_THEMES.map(theme => (
                     <div
-                      key={key}
+                      key={theme}
                       className={styles.heatmapCell}
                       style={{
-                        backgroundColor: getHeatmapColor(row[key]),
-                        opacity: 0.3 + (row[key] / 100) * 0.7
+                        backgroundColor: getHeatmapColor(row[theme] || 0),
+                        opacity: 0.3 + ((row[theme] || 0) / 100) * 0.7
                       }}
-                      title={`${row.airline} - ${key}: ${row[key]}%`}
+                      title={`${row.airline} - ${theme}: ${row[theme] || 0}%`}
                     >
-                      {row[key]}
+                      {row[theme] || 0}
                     </div>
                   ))}
                 </div>

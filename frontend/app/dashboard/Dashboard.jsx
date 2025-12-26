@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Card from '../../components/Card'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 import styles from './Dashboard.module.css'
 
 export default function Dashboard() {
@@ -13,7 +14,44 @@ export default function Dashboard() {
   })
 
   const [recordingHistory, setRecordingHistory] = useState([])
-  const [themePeriod, setThemePeriod] = useState('month') // day, month, year
+
+  // Helper function to validate airline names
+  const isValidAirlineName = (name) => {
+    if (!name || typeof name !== 'string') return false
+    
+    const nameLower = name.toLowerCase().trim()
+    
+    // Filter out error messages and invalid text
+    const invalidPatterns = [
+      'no airline',
+      'there are no',
+      'not mentioned',
+      'no specific',
+      'cannot identify',
+      'unable to',
+      'provided text',
+      'mentioned in',
+      'the provided',
+      "i'm sorry",
+      'does not contain',
+      'sorry, but'
+    ]
+    
+    // Check if name contains any invalid pattern
+    for (const pattern of invalidPatterns) {
+      if (nameLower.includes(pattern)) {
+        return false
+      }
+    }
+    
+    // Filter out names that are too long (likely error messages)
+    if (name.length > 50) {
+      return false
+    }
+    
+    return true
+  }
+  const [themePeriod, setThemePeriod] = useState('month') // day, week, month, quarter, year
   const [loading, setLoading] = useState(true)
 
   // Backend themes matching backend/src/config/themes.py
@@ -61,8 +99,19 @@ export default function Dashboard() {
       ? Math.round((sentimentCounts.positive / totalInsights) * 100) 
       : 0
 
-    // Active airlines (unique airlines)
-    const uniqueAirlines = new Set(history.map(r => r.airline).filter(a => a && a !== 'Unknown Airline'))
+    // Active airlines (extract individual airlines from both array and string formats)
+    const allAirlinesFromHistory = []
+    history.forEach(r => {
+      if (r.airlines && Array.isArray(r.airlines)) {
+        // New format: airlines is an array - filter invalid names
+        allAirlinesFromHistory.push(...r.airlines.filter(a => isValidAirlineName(a)))
+      } else if (r.airline) {
+        // Old format: airline is a string (may be comma-separated) - filter invalid names
+        const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && isValidAirlineName(a))
+        allAirlinesFromHistory.push(...airlines)
+      }
+    })
+    const uniqueAirlines = new Set(allAirlinesFromHistory)
     const activeAirlines = uniqueAirlines.size
 
     // Average confidence (default to 0.85 if not available)
@@ -112,10 +161,33 @@ export default function Dashboard() {
     const filteredByTime = recordingHistory.filter(record => {
       if (!record.date) return false
       const recordDate = new Date(record.date)
+      
       if (themePeriod === 'day') {
         return recordDate.toDateString() === now.toDateString()
+      } else if (themePeriod === 'week') {
+        // Get start of current week (Monday)
+        const startOfWeek = new Date(now)
+        const day = startOfWeek.getDay()
+        const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1) // Adjust when day is Sunday
+        startOfWeek.setDate(diff)
+        startOfWeek.setHours(0, 0, 0, 0)
+        
+        // Get end of current week (Sunday)
+        const endOfWeek = new Date(startOfWeek)
+        endOfWeek.setDate(startOfWeek.getDate() + 6)
+        endOfWeek.setHours(23, 59, 59, 999)
+        
+        return recordDate >= startOfWeek && recordDate <= endOfWeek
       } else if (themePeriod === 'month') {
         return recordDate.getMonth() === now.getMonth() && recordDate.getFullYear() === now.getFullYear()
+      } else if (themePeriod === 'quarter') {
+        // Calculate current quarter
+        const currentQuarter = Math.floor(now.getMonth() / 3) // 0-3 (Q1-Q4)
+        const quarterStartMonth = currentQuarter * 3 // 0, 3, 6, or 9
+        const quarterStart = new Date(now.getFullYear(), quarterStartMonth, 1)
+        const quarterEnd = new Date(now.getFullYear(), quarterStartMonth + 3, 0, 23, 59, 59, 999)
+        
+        return recordDate >= quarterStart && recordDate <= quarterEnd
       } else if (themePeriod === 'year') {
         return recordDate.getFullYear() === now.getFullYear()
       }
@@ -129,12 +201,13 @@ export default function Dashboard() {
     })
 
     filteredByTime.forEach(record => {
-      const recordTheme = record.theme || 'General'
-      // Match exact theme or partial match
-      BACKEND_THEMES.forEach(theme => {
-        if (recordTheme.toLowerCase().includes(theme.toLowerCase()) || 
-            theme.toLowerCase().includes(recordTheme.toLowerCase())) {
-          themeCounts[theme]++
+      // Extract themes from both array and string formats
+      const recordThemes = record.themes || (record.theme ? record.theme.split(',').map(t => t.trim()) : [])
+      
+      // Count exact theme matches
+      recordThemes.forEach(recordTheme => {
+        if (recordTheme && BACKEND_THEMES.includes(recordTheme)) {
+          themeCounts[recordTheme]++
         }
       })
     })
@@ -167,15 +240,27 @@ export default function Dashboard() {
     })
 
     const calculateThemeTrend = (themeName) => {
-      const thisMonthCount = thisMonthRecords.filter(r => 
-        (r.theme || '').toLowerCase().includes(themeName.toLowerCase()) ||
-        (r.summary || '').toLowerCase().includes(themeName.toLowerCase())
-      ).length
+      const thisMonthCount = thisMonthRecords.filter(r => {
+        // Check both theme formats (array and string)
+        if (r.themes && Array.isArray(r.themes)) {
+          return r.themes.includes(themeName)
+        } else if (r.theme) {
+          const themes = r.theme.split(',').map(t => t.trim())
+          return themes.includes(themeName)
+        }
+        return false
+      }).length
 
-      const lastMonthCount = lastMonthRecords.filter(r => 
-        (r.theme || '').toLowerCase().includes(themeName.toLowerCase()) ||
-        (r.summary || '').toLowerCase().includes(themeName.toLowerCase())
-      ).length
+      const lastMonthCount = lastMonthRecords.filter(r => {
+        // Check both theme formats (array and string)
+        if (r.themes && Array.isArray(r.themes)) {
+          return r.themes.includes(themeName)
+        } else if (r.theme) {
+          const themes = r.theme.split(',').map(t => t.trim())
+          return themes.includes(themeName)
+        }
+        return false
+      }).length
 
       const change = lastMonthCount > 0 
         ? Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100)
@@ -207,12 +292,35 @@ export default function Dashboard() {
   // Calculate airline activity
   const getAirlineActivity = () => {
     const airlineCounts = {}
+    let recordsWithNoValidAirlines = 0
+    
     recordingHistory.forEach(record => {
-      const airline = record.airline || 'Unknown'
-      if (airline !== 'Unknown Airline') {
-        airlineCounts[airline] = (airlineCounts[airline] || 0) + 1
+      // Extract individual airlines from both array and string formats
+      let airlines = []
+      if (record.airlines && Array.isArray(record.airlines)) {
+        airlines = record.airlines.filter(a => isValidAirlineName(a))
+      } else if (record.airline) {
+        airlines = record.airline.split(',').map(a => a.trim()).filter(a => isValidAirlineName(a))
+      }
+      
+      // Check if record has no valid airlines
+      const hasValidAirline = airlines.some(a => a && a !== DEFAULT_UNKNOWN_AIRLINE)
+      
+      if (!hasValidAirline) {
+        recordsWithNoValidAirlines++
+      } else {
+        airlines.forEach(airline => {
+          if (airline && airline !== DEFAULT_UNKNOWN_AIRLINE) {
+            airlineCounts[airline] = (airlineCounts[airline] || 0) + 1
+          }
+        })
       }
     })
+    
+    // Add DEFAULT_UNKNOWN_AIRLINE if there are records with no valid airlines
+    if (recordsWithNoValidAirlines > 0) {
+      airlineCounts[DEFAULT_UNKNOWN_AIRLINE] = recordsWithNoValidAirlines
+    }
 
     return Object.entries(airlineCounts)
       .map(([airline, count]) => ({ airline, count }))
@@ -298,7 +406,9 @@ export default function Dashboard() {
             onChange={(e) => setThemePeriod(e.target.value)}
           >
             <option value="day">Today</option>
+            <option value="week">This Week</option>
             <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
         </div>
@@ -451,9 +561,25 @@ export default function Dashboard() {
                    record.signal?.toLowerCase().includes('negative') ? '📉' : '📊'}
                 </div>
                 <div className={styles.predictionInfo}>
-                  <span className={styles.predictionLabel}>
-                    {record.airline} - {record.theme}
-                  </span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                    {(() => {
+                      let airlines = record.airlines || (record.airline ? record.airline.split(',').map(a => a.trim()) : [])
+                      airlines = airlines.filter(a => isValidAirlineName(a))
+                      if (airlines.length === 0) {
+                        airlines = [DEFAULT_UNKNOWN_AIRLINE]
+                      }
+                      return airlines.map((airline, idx) => (
+                        <span key={idx} className={styles.airlineBadge}>
+                          {airline.trim()}
+                        </span>
+                      ))
+                    })()}
+                    {(record.themes || (record.theme ? record.theme.split(',').map(t => t.trim()) : [])).map((theme, idx) => (
+                      <span key={idx} className={styles.themeBadge}>
+                        {theme.trim()}
+                      </span>
+                    ))}
+                  </div>
                   <span className={styles.predictionDesc}>
                     {record.summary?.substring(0, 80)}{record.summary?.length > 80 ? '...' : ''}
                   </span>

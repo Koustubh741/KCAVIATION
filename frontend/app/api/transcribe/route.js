@@ -13,7 +13,7 @@ export async function POST(request) {
     }
 
     // Get backend API URL from environment or use default
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8001'
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
     
     // Forward request to backend API
     const backendFormData = new FormData()
