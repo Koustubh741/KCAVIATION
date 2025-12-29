@@ -2,10 +2,82 @@
 
 import styles from './AIAnalysisResult.module.css'
 import Card from '../../components/Card'
+import NewsCorrelation from './NewsCorrelation'
+import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 
 export default function AIAnalysisResult({ analysis }) {
     if (!analysis) return null
     
+    // Helper function to validate airline names
+    const isValidAirlineName = (name) => {
+        if (!name || typeof name !== 'string') return false
+        
+        const nameLower = name.toLowerCase().trim()
+        
+        // Filter out error messages and invalid text
+        const invalidPatterns = [
+            'no airline',
+            'there are no',
+            'not mentioned',
+            'no specific',
+            'cannot identify',
+            'unable to',
+            'provided text',
+            'mentioned in',
+            'the provided',
+            "i'm sorry",
+            'does not contain',
+            'sorry, but'
+        ]
+        
+        // Check if name contains any invalid pattern
+        for (const pattern of invalidPatterns) {
+            if (nameLower.includes(pattern)) {
+                return false
+            }
+        }
+        
+        // Filter out names that are too long (likely error messages)
+        if (name.length > 50) {
+            return false
+        }
+        
+        return true
+    }
+    
+    // Filter airline specifications to remove invalid names
+    const filteredAirlineSpecs = (analysis.airlineSpecifications || []).filter(spec => 
+        spec && spec.airline && isValidAirlineName(spec.airline)
+    )
+    
+    // If no valid airlines, add default
+    if (filteredAirlineSpecs.length === 0 && (analysis.airlineSpecifications || []).length > 0) {
+        filteredAirlineSpecs.push({
+            airline: DEFAULT_UNKNOWN_AIRLINE,
+            relevance: 'Low',
+            isPrimary: true,
+            signals: ['General'],
+            score: 0.0,
+            mentionCount: 0
+        })
+    }
+
+    // Filter airlineThemeMap to remove invalid airline names
+    const filteredAirlineThemeMap = {}
+    if (analysis.airlineThemeMap) {
+        Object.entries(analysis.airlineThemeMap).forEach(([airline, themes]) => {
+            if (isValidAirlineName(airline)) {
+                filteredAirlineThemeMap[airline] = themes
+            }
+        })
+    }
+
+    // Filter allAirlines to remove invalid names
+    const filteredAllAirlines = (analysis.allAirlines || []).filter(a => isValidAirlineName(a))
+    if (filteredAllAirlines.length === 0 && (analysis.allAirlines || []).length > 0) {
+        filteredAllAirlines.push(DEFAULT_UNKNOWN_AIRLINE)
+    }
+
     // Ensure all required fields exist with defaults
     const safeAnalysis = {
         summary: analysis.summary || 'No summary available',
@@ -15,13 +87,14 @@ export default function AIAnalysisResult({ analysis }) {
         sentiment: analysis.sentiment || { overall: 'Neutral', score: 0.5, breakdown: { positive: 33, neutral: 34, negative: 33 } },
         confidenceScore: analysis.confidenceScore || 0.5,
         predictiveProbabilities: analysis.predictiveProbabilities || [],
-        airlineSpecifications: analysis.airlineSpecifications || [],
-        primaryAirline: analysis.primaryAirline || null,
-        allAirlines: analysis.allAirlines || [],
+        airlineSpecifications: filteredAirlineSpecs,
+        primaryAirline: analysis.primaryAirline && isValidAirlineName(analysis.primaryAirline) ? analysis.primaryAirline : (filteredAllAirlines.length > 0 ? filteredAllAirlines[0] : DEFAULT_UNKNOWN_AIRLINE),
+        allAirlines: filteredAllAirlines,
         timestamp: analysis.timestamp || new Date().toISOString(),
         originalTheme: analysis.originalTheme || null,
-        airlineThemeMap: analysis.airlineThemeMap || {},
-        themeAirlineMap: analysis.themeAirlineMap || {}
+        airlineThemeMap: filteredAirlineThemeMap,
+        themeAirlineMap: analysis.themeAirlineMap || {},
+        correlation: analysis.correlation || null
     }
 
     const getSentimentColor = (sentiment) => {
@@ -132,7 +205,7 @@ export default function AIAnalysisResult({ analysis }) {
             <div className={styles.tagsRow}>
                 {/* Keywords */}
                 <Card className={styles.tagsCard}>
-                    <h4 className={styles.cardTitle}>
+                    <h4 className={styles.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>
                         <span>🔑</span> Keywords
                     </h4>
                     <div className={styles.tagsList}>
@@ -150,7 +223,7 @@ export default function AIAnalysisResult({ analysis }) {
 
                 {/* Themes */}
                 <Card className={styles.tagsCard}>
-                    <h4 className={styles.cardTitle}>
+                    <h4 className={styles.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>
                         <span>🏷️</span> Themes
                     </h4>
                     <div className={styles.tagsList}>
@@ -347,6 +420,11 @@ export default function AIAnalysisResult({ analysis }) {
                     )}
                 </div>
             ) : null}
+
+            {/* News Correlation */}
+            {safeAnalysis.correlation && (
+                <NewsCorrelation correlation={safeAnalysis.correlation} />
+            )}
 
             {/* Timestamp */}
             <div className={styles.timestamp}>

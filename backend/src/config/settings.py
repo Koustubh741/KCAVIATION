@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     
     # API Keys
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
+    newsapi_key: str = os.getenv("NEWSAPI_KEY", "")
     
     # Server Configuration
     api_host: str = os.getenv("API_HOST", "0.0.0.0")
@@ -30,6 +31,16 @@ class Settings(BaseSettings):
     # AI Model Configuration
     transcription_model: str = os.getenv("TRANSCRIPTION_MODEL", "whisper-1")
     analysis_model: str = os.getenv("ANALYSIS_MODEL", "gpt-4o")
+    
+    # News Correlation Configuration
+    correlation_enabled: bool = os.getenv("CORRELATION_ENABLED", "true").lower() == "true"
+    news_search_days_back: int = int(os.getenv("NEWS_SEARCH_DAYS_BACK", "30"))
+    correlation_similarity_threshold: float = float(os.getenv("CORRELATION_SIMILARITY_THRESHOLD", "0.4"))
+    claim_similarity_threshold: float = float(os.getenv("CLAIM_SIMILARITY_THRESHOLD", "0.5"))
+    max_search_terms: int = int(os.getenv("MAX_SEARCH_TERMS", "20"))
+    
+    # Default Values Configuration
+    default_unknown_airline: str = os.getenv("DEFAULT_UNKNOWN_AIRLINE", "Unknown Airline")
     
     class Config:
         """Pydantic config."""

@@ -183,6 +183,18 @@
     padding: 24px !important;
 }
 
+.tagsCard .cardTitle {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    margin-bottom: 16px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 .tagsList {
     display: flex;
     flex-wrap: wrap;

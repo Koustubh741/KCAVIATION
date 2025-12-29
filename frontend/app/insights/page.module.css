@@ -382,40 +382,46 @@
 
 .heatmapHeader {
   display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
-  gap: 8px;
-  margin-bottom: 8px;
+  grid-template-columns: 120px repeat(11, minmax(60px, 1fr));
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .heatmapCorner {
-  /* Empty corner */
+  /* Empty corner for grid alignment */
+  min-width: 0;
 }
 
 .heatmapHeaderCell {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-align: center;
-  padding: 10px;
+  padding: 6px 4px;
   background: rgba(99, 102, 241, 0.15);
-  border-radius: 8px;
+  border-radius: 6px;
+  line-height: 1.2;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .heatmapBody {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .heatmapRow {
   display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
-  gap: 8px;
+  grid-template-columns: 120px repeat(11, minmax(60px, 1fr));
+  gap: 6px;
 }
 
 .heatmapRowLabel {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -426,13 +432,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  border-radius: 10px;
+  padding: 4px 2px;
+  border-radius: 6px;
   color: #ffffff;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: transform 0.2s ease;
+  height: 30px;
+  min-width: 30px;
 }
 
 .heatmapCell:hover {
@@ -513,6 +521,29 @@
   .heatmapCard {
     grid-column: span 1;
   }
+
+  .heatmapHeader {
+    grid-template-columns: 100px repeat(11, minmax(50px, 1fr));
+    gap: 4px;
+  }
+
+  .heatmapRow {
+    grid-template-columns: 100px repeat(11, minmax(50px, 1fr));
+    gap: 4px;
+  }
+
+  .heatmapCell {
+    height: 30px;
+    min-width: 30px;
+    font-size: 0.8rem;
+    padding: 4px 2px;
+  }
+
+  .heatmapHeaderCell {
+    font-size: 0.65rem;
+    padding: 4px 2px;
+    min-height: 35px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -583,6 +614,33 @@
   color: #4ade80;
   font-size: 0.85rem;
   display: inline-block;
+}
+
+.airlineBadge {
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  color: #818cf8;
+  font-size: 0.85rem;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.moreButton {
+  background: transparent;
+  border: none;
+  color: #4ade80;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 4px;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.moreButton:hover {
+  color: #22c55e;
 }
 
 /* Search and Filters */
@@ -868,6 +926,54 @@ input[type="date"].filterDropdown {
 .transcriptBox p {
   font-style: italic;
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* Themes View */
+.themesView {
+  width: 100%;
+}
+
+.themesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.themeSummaryCard {
+  background: rgba(20, 30, 45, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.themeSummaryCard:hover {
+  background: rgba(20, 30, 45, 0.8);
+  border-color: rgba(74, 222, 128, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.1);
+}
+
+.themeSummaryHeader {
+  margin-bottom: 16px;
+}
+
+.themeSummaryContent {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.themeSummaryContent h4 {
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.themeSummaryContent p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 @keyframes fadeIn {

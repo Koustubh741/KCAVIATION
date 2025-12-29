@@ -258,6 +258,28 @@
   color: #4ade80;
 }
 
+/* Badge Styles */
+.airlineBadge {
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  color: #818cf8;
+  font-size: 0.85rem;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.themeBadge {
+  padding: 4px 12px;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 20px;
+  color: #4ade80;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .summaryCards {

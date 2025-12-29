@@ -118,7 +118,13 @@ export default function Alerts({ alerts }) {
             <p className={styles.alertMessage}>{alert.message}</p>
             <div className={styles.alertMeta}>
               <span className={styles.airline}>{alert.airline}</span>
-              <span className={styles.category}>{alert.category}</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                {(alert.categories || (alert.category ? alert.category.split(',').map(t => t.trim()).filter(t => t) : [])).map((cat, idx) => (
+                  <span key={idx} className={styles.category}>
+                    {cat.trim()}
+                  </span>
+                ))}
+              </div>
             </div>
           </Card>
         ))}
