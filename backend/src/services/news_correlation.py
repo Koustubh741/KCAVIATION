@@ -76,6 +76,7 @@ class NewsCorrelationService:
         """
         if not self.api_key:
             logger.warning("NewsAPI key not configured, skipping news search")
+            logger.warning("Please set NEWSAPI_KEY in your .env file to enable news fetching")
             return []
         
         # Parse query string into keywords

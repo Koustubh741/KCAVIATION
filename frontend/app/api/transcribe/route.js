@@ -1,4 +1,7 @@
 export async function POST(request) {
+  // Get backend API URL from environment or use default (defined outside try block for error handling)
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+  
   try {
     const formData = await request.formData()
     const audioFile = formData.get('audio')
@@ -11,9 +14,6 @@ export async function POST(request) {
         { status: 400 }
       )
     }
-
-    // Get backend API URL from environment or use default
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
     
     // Forward request to backend API
     const backendFormData = new FormData()
@@ -42,8 +42,15 @@ export async function POST(request) {
     return Response.json(data)
   } catch (error) {
     console.error('Transcription error:', error)
+    
+    // Check if it's a connection error
+    let errorMessage = 'Failed to process transcription: ' + error.message
+    if (error.cause?.code === 'ECONNREFUSED' || error.message.includes('fetch failed') || error.message.includes('ECONNREFUSED')) {
+      errorMessage = `Cannot connect to backend server at ${backendUrl}. Please ensure:\n1. Backend server is running (check backend directory)\n2. Backend is accessible at ${backendUrl}\n3. No firewall is blocking the connection`
+    }
+    
     return Response.json(
-      { error: 'Failed to process transcription: ' + error.message },
+      { error: errorMessage },
       { status: 500 }
     )
   }

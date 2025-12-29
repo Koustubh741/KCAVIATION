@@ -1,5 +1,5 @@
 """Airline configuration and keywords for content extraction."""
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 import json
 import re
 
@@ -87,7 +87,7 @@ async def detect_airlines_with_ai(
     text: str,
     openai_client,
     model: str = "gpt-4o"
-) -> List[Dict[str, any]]:
+) -> List[Dict[str, Any]]:
     """
     Detect airlines mentioned in text using OpenAI AI.
     This method can identify airlines even if they're not in the keyword list.
@@ -352,7 +352,7 @@ def _normalize_airline_name(airline_name: str) -> str:
     return airline_name.title()
 
 
-def detect_airlines_in_text(text: str) -> List[Dict[str, any]]:
+def detect_airlines_in_text(text: str) -> List[Dict[str, Any]]:
     """
     Detect airlines mentioned in text based on keywords.
     
@@ -436,7 +436,7 @@ def detect_airlines_in_text(text: str) -> List[Dict[str, any]]:
     return detected_airlines[:5]  # Return top 5
 
 
-def get_primary_airline(detected_airlines: List[Dict[str, any]]) -> Optional[Dict[str, any]]:
+def get_primary_airline(detected_airlines: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     """
     Determine the primary airline from detected airlines.
     

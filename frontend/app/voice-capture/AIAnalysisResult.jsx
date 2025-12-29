@@ -7,7 +7,7 @@ import { DEFAULT_UNKNOWN_AIRLINE } from '../constants'
 
 export default function AIAnalysisResult({ analysis }) {
     if (!analysis) return null
-
+    
     // Helper function to validate airline names
     const isValidAirlineName = (name) => {
         if (!name || typeof name !== 'string') return false
@@ -205,7 +205,7 @@ export default function AIAnalysisResult({ analysis }) {
             <div className={styles.tagsRow}>
                 {/* Keywords */}
                 <Card className={styles.tagsCard}>
-                    <h4 className={styles.cardTitle}>
+                    <h4 className={styles.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>
                         <span>🔑</span> Keywords
                     </h4>
                     <div className={styles.tagsList}>
@@ -223,7 +223,7 @@ export default function AIAnalysisResult({ analysis }) {
 
                 {/* Themes */}
                 <Card className={styles.tagsCard}>
-                    <h4 className={styles.cardTitle}>
+                    <h4 className={styles.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>
                         <span>🏷️</span> Themes
                     </h4>
                     <div className={styles.tagsList}>

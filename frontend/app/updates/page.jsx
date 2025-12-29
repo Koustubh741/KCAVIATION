@@ -167,13 +167,13 @@ export default function UpdatesPage() {
                     return sum + (r.correlation?.correlationScore || 0)
                 }, 0) / recordsWithCorrelation.length
 
-                verifiedCount = recordsWithCorrelation.filter(r => 
+                verifiedCount = recordsWithCorrelation.filter(r =>
                     r.correlation?.verificationStatus === 'verified'
                 ).length
-                partialCount = recordsWithCorrelation.filter(r => 
+                partialCount = recordsWithCorrelation.filter(r =>
                     r.correlation?.verificationStatus === 'partial'
                 ).length
-                unverifiedCount = recordsWithCorrelation.filter(r => 
+                unverifiedCount = recordsWithCorrelation.filter(r =>
                     r.correlation?.verificationStatus === 'unverified'
                 ).length
             }
@@ -232,6 +232,10 @@ export default function UpdatesPage() {
                 headers: {
                     'Content-Type': 'application/json',
                 }
+            }).catch((fetchError) => {
+                // Handle network/connection errors
+                console.error('Fetch error:', fetchError)
+                throw new Error(`Cannot connect to backend server at ${backendUrl}. Please ensure:\n1. Backend server is running (check backend directory)\n2. Backend is accessible at ${backendUrl}\n3. No firewall is blocking the connection`)
             })
             
             if (!response.ok) {
@@ -250,25 +254,32 @@ export default function UpdatesPage() {
                     errorMessage = `HTTP ${response.status}: ${response.statusText}`
                 }
                 
-                // Check if it's a connection error
-                if (response.status === 0 || errorMessage.includes('Failed to fetch')) {
-                    errorMessage = 'Cannot connect to backend server. Please ensure the backend is running on ' + backendUrl
-                }
-                
                 throw new Error(errorMessage)
             }
             
             const data = await response.json()
             console.log('News fetched successfully:', data.count, 'articles')
+            console.log('News data:', data)
             
-            setAviationNews(data.articles || [])
+            // Handle both response formats
+            const articles = data.articles || data || []
+            const formattedArticles = Array.isArray(articles) ? articles : []
+            
+            if (formattedArticles.length === 0) {
+                console.warn('No articles returned from backend. This could mean:')
+                console.warn('1. NewsAPI key is not configured')
+                console.warn('2. No news found for the selected filters')
+                console.warn('3. NewsAPI service is unavailable')
+            }
+            
+            setAviationNews(formattedArticles)
         } catch (error) {
             console.error('Failed to fetch aviation news:', error)
             console.error('Backend URL:', BACKEND_URL)
             console.error('Error details:', error.message)
             
             // Show user-friendly error
-            if (error.message.includes('Cannot connect') || error.message.includes('Failed to fetch')) {
+            if (error.message.includes('Cannot connect') || error.message.includes('Failed to fetch') || error.message.includes('ECONNREFUSED')) {
                 alert('Cannot connect to backend server. Please ensure:\n1. Backend server is running\n2. Backend URL is correct (check .env file)\n3. No firewall is blocking the connection')
             } else {
                 alert(`Failed to fetch news: ${error.message}`)
@@ -317,6 +328,10 @@ export default function UpdatesPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData
+            }).catch((fetchError) => {
+                // Handle network/connection errors
+                console.error('Fetch error:', fetchError)
+                throw new Error(`Cannot connect to backend server at ${backendUrl}. Please ensure:\n1. Backend server is running (check backend directory)\n2. Backend is accessible at ${backendUrl}\n3. No firewall is blocking the connection`)
             })
             
             if (!response.ok) {
@@ -335,15 +350,11 @@ export default function UpdatesPage() {
                     errorMessage = `HTTP ${response.status}: ${response.statusText}`
                 }
                 
-                // Check if it's a connection error
-                if (response.status === 0 || errorMessage.includes('Failed to fetch')) {
-                    errorMessage = 'Cannot connect to backend server. Please ensure the backend is running on ' + backendUrl
-                }
-                
                 throw new Error(errorMessage)
             }
             
             const correlation = await response.json()
+            console.log('Correlation result:', correlation)
             setCorrelationResult(correlation)
         } catch (error) {
             console.error('Correlation failed:', error)
@@ -351,11 +362,12 @@ export default function UpdatesPage() {
             console.error('Error details:', error.message)
             
             // Show user-friendly error
-            if (error.message.includes('Cannot connect') || error.message.includes('Failed to fetch')) {
+            if (error.message.includes('Cannot connect') || error.message.includes('Failed to fetch') || error.message.includes('ECONNREFUSED')) {
                 alert('Cannot connect to backend server. Please ensure:\n1. Backend server is running\n2. Backend URL is correct (check .env file)\n3. No firewall is blocking the connection')
             } else {
                 alert(`Failed to correlate news article: ${error.message}`)
             }
+            setCorrelationResult(null)
         }
     }
 
@@ -576,7 +588,15 @@ export default function UpdatesPage() {
                             </div>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.4)' }}>
-                                <p>No news found for selected filters. Try adjusting your filters or check back later.</p>
+                                <p style={{ marginBottom: '10px', fontSize: '1rem' }}>No news found for selected filters.</p>
+                                <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.3)', lineHeight: '1.6' }}>
+                                    <p>This could mean:</p>
+                                    <ul style={{ textAlign: 'left', display: 'inline-block', marginTop: '10px' }}>
+                                        <li>No news articles match your filters</li>
+                                        <li>NewsAPI service is unavailable or not configured</li>
+                                        <li>Try adjusting your filters or check back later</li>
+                                    </ul>
+                                </div>
                             </div>
                         )}
                         
@@ -631,13 +651,13 @@ export default function UpdatesPage() {
                                     <div style={{ marginBottom: '1rem' }}>
                                         <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.5rem' }}>
                                             <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                                                Correlation Score: <strong style={{ color: '#4ade80' }}>{(correlationResult.correlationScore * 100).toFixed(0)}%</strong>
+                                                Correlation Score: <strong style={{ color: '#4ade80' }}>{(correlationResult.correlationScore ? (correlationResult.correlationScore * 100).toFixed(0) : 0)}%</strong>
                                             </span>
                                             <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                                                 Status: <strong style={{ 
                                                     color: correlationResult.verificationStatus === 'verified' ? '#4ade80' :
                                                            correlationResult.verificationStatus === 'partial' ? '#fbbf24' : '#f87171'
-                                                }}>{correlationResult.verificationStatus}</strong>
+                                                }}>{correlationResult.verificationStatus || 'unverified'}</strong>
                                             </span>
                                         </div>
                                     </div>
@@ -726,10 +746,10 @@ export default function UpdatesPage() {
                         </div>
                     ) : (
                         <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.4)' }}>
-                            <p>No updates available. Record some voice insights to see updates here.</p>
+                            <p>No recent signals found.</p>
                         </div>
                     )
-                ) : (
+                ) : activeTab === 'correlation' ? (
                     <div className={styles.correlationView}>
                         <Card className={styles.correlationCard}>
                             <h3>Market Correlation Analysis</h3>
@@ -824,7 +844,7 @@ export default function UpdatesPage() {
                             </div>
                         </Card>
                     </div>
-                )}
+                ) : null}
             </div>
         </div>
     )

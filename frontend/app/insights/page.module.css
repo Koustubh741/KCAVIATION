@@ -928,6 +928,54 @@ input[type="date"].filterDropdown {
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* Themes View */
+.themesView {
+  width: 100%;
+}
+
+.themesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.themeSummaryCard {
+  background: rgba(20, 30, 45, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.themeSummaryCard:hover {
+  background: rgba(20, 30, 45, 0.8);
+  border-color: rgba(74, 222, 128, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.1);
+}
+
+.themeSummaryHeader {
+  margin-bottom: 16px;
+}
+
+.themeSummaryContent {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.themeSummaryContent h4 {
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.themeSummaryContent p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

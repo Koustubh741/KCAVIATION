@@ -247,6 +247,7 @@ async def get_aviation_news(
             query = " ".join(query_parts)
         
         # Fetch news
+        logger.info(f"Fetching news with query: {query}, airlines: {airlines_list}, days: {days}")
         articles = await news_service.search_aviation_news(
             query=query,
             airlines=airlines_list if airlines_list else None,
@@ -254,6 +255,8 @@ async def get_aviation_news(
             date_to=date_to,
             max_results=max_results
         )
+        
+        logger.info(f"Fetched {len(articles)} articles")
         
         return JSONResponse({
             "articles": articles,

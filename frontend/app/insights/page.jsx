@@ -34,7 +34,14 @@ export default function InsightsPage() {
       'the provided',
       "i'm sorry",
       'does not contain',
-      'sorry, but'
+      'sorry, but',
+      'i\'m sorry, but',
+      'the provided text',
+      'does not contain any',
+      'there are no airline',
+      'there are no specific',
+      'no airline names',
+      'no specific airline'
     ]
     
     // Check if name contains any invalid pattern
@@ -49,12 +56,24 @@ export default function InsightsPage() {
       return false
     }
     
+    // Filter out names that start with common error prefixes
+    if (nameLower.startsWith('i\'m sorry') || 
+        nameLower.startsWith('sorry,') ||
+        nameLower.startsWith('there are no') ||
+        nameLower.startsWith('the provided')) {
+      return false
+    }
+    
     return true
   }
   const [activeTab, setActiveTab] = useState('overview')
   
   // Expanded summaries state
   const [expandedSummaries, setExpandedSummaries] = useState({})
+  
+  // Theme summaries state
+  const [themeSummaries, setThemeSummaries] = useState({})
+  const [loadingThemes, setLoadingThemes] = useState(false)
 
 
   // Search and Filter States
@@ -87,8 +106,9 @@ export default function InsightsPage() {
     const allAirlinesFromHistory = []
     history.forEach(r => {
       if (r.airlines && Array.isArray(r.airlines)) {
-        // New format: airlines is an array
-        allAirlinesFromHistory.push(...r.airlines)
+        // New format: airlines is an array - filter invalid names
+        const validAirlines = r.airlines.filter(a => isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
+        allAirlinesFromHistory.push(...validAirlines)
       } else if (r.airline) {
         // Old format: airline is a string (may be comma-separated)
         const airlines = r.airline.split(',').map(a => a.trim()).filter(a => a && isValidAirlineName(a) && a !== DEFAULT_UNKNOWN_AIRLINE)
@@ -137,10 +157,73 @@ export default function InsightsPage() {
   const handleRowClick = (record) => {
     setSelectedRecord(record)
     setActiveTab('overview')
+    setThemeSummaries({}) // Reset theme summaries when opening new record
   }
 
   const handleCloseModal = () => {
     setSelectedRecord(null)
+    setThemeSummaries({}) // Reset theme summaries when closing modal
+  }
+
+  const fetchThemeSummaries = async (themes, transcript) => {
+    if (!themes || themes.length === 0 || !transcript) {
+      setThemeSummaries({})
+      return
+    }
+
+    setLoadingThemes(true)
+    const summaries = {}
+
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+      
+      // Fetch summary for each theme
+      const themePromises = themes.map(async (theme) => {
+        try {
+          const formData = new URLSearchParams()
+          formData.append('text', transcript)
+          formData.append('theme_filter', theme)
+
+          const response = await fetch(`${backendUrl}/api/analyze`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+          })
+
+          if (response.ok) {
+            const data = await response.json()
+            return {
+              theme,
+              summary: data.summary || 'No summary available for this theme'
+            }
+          } else {
+            return {
+              theme,
+              summary: 'Failed to generate summary for this theme'
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching summary for theme ${theme}:`, error)
+          return {
+            theme,
+            summary: 'Error generating summary'
+          }
+        }
+      })
+
+      const results = await Promise.all(themePromises)
+      results.forEach(({ theme, summary }) => {
+        summaries[theme] = summary
+      })
+
+      setThemeSummaries(summaries)
+    } catch (error) {
+      console.error('Error fetching theme summaries:', error)
+    } finally {
+      setLoadingThemes(false)
+    }
   }
   
   // Helper functions for summary expansion
@@ -680,6 +763,49 @@ export default function InsightsPage() {
 
       </div>
 
+      {/* Summary Stats */}
+      <div className={styles.summaryGrid}>
+        <Card className={styles.statCard}>
+          <div className={styles.statIcon}>📡</div>
+          <div className={styles.statInfo}>
+            <span className={styles.statValue}>{data?.dailySummary?.totalSignals || 0}</span>
+            <span className={styles.statLabel}>Total Signals</span>
+          </div>
+        </Card>
+        <Card className={styles.statCard}>
+          <div className={styles.statIcon}>💡</div>
+          <div className={styles.statInfo}>
+            <span className={styles.statValue}>{data?.dailySummary?.newInsights || 0}</span>
+            <span className={styles.statLabel}>New Insights (Today)</span>
+          </div>
+        </Card>
+        <Card className={styles.statCard}>
+          <div className={styles.statIcon}>✈️</div>
+          <div className={styles.statInfo}>
+            <span className={styles.statValue}>{data?.dailySummary?.activeAirlines || 0}</span>
+            <span className={styles.statLabel}>Active Airlines</span>
+          </div>
+        </Card>
+        <Card className={styles.statCard}>
+          <div className={styles.statIcon}>⚠️</div>
+          <div className={styles.statInfo}>
+            <span className={styles.statValue} style={{ color: '#f87171' }}>
+              {data?.dailySummary?.highRiskAlerts || 0}
+            </span>
+            <span className={styles.statLabel}>High-Risk Alerts</span>
+          </div>
+        </Card>
+        <Card className={styles.statCard}>
+          <div className={styles.statIcon}>🎯</div>
+          <div className={styles.statInfo}>
+            <span className={styles.statValue}>
+              {data?.dailySummary?.avgConfidence ? (data.dailySummary.avgConfidence * 100).toFixed(0) : 85}%
+            </span>
+            <span className={styles.statLabel}>Avg Confidence</span>
+          </div>
+        </Card>
+      </div>
+
       {/* Search and Filters */}
       <div className={styles.searchFilterContainer}>
         {/* Search Bar */}
@@ -740,49 +866,6 @@ export default function InsightsPage() {
             onChange={(e) => handleFilterChange('date', e.target.value)}
           />
         </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className={styles.summaryGrid}>
-        <Card className={styles.statCard}>
-          <div className={styles.statIcon}>📡</div>
-          <div className={styles.statInfo}>
-            <span className={styles.statValue}>{data?.dailySummary?.totalSignals || 0}</span>
-            <span className={styles.statLabel}>Total Signals</span>
-          </div>
-        </Card>
-        <Card className={styles.statCard}>
-          <div className={styles.statIcon}>💡</div>
-          <div className={styles.statInfo}>
-            <span className={styles.statValue}>{data?.dailySummary?.newInsights || 0}</span>
-            <span className={styles.statLabel}>New Insights (Today)</span>
-          </div>
-        </Card>
-        <Card className={styles.statCard}>
-          <div className={styles.statIcon}>✈️</div>
-          <div className={styles.statInfo}>
-            <span className={styles.statValue}>{data?.dailySummary?.activeAirlines || 0}</span>
-            <span className={styles.statLabel}>Active Airlines</span>
-          </div>
-        </Card>
-        <Card className={styles.statCard}>
-          <div className={styles.statIcon}>⚠️</div>
-          <div className={styles.statInfo}>
-            <span className={styles.statValue} style={{ color: '#f87171' }}>
-              {data?.dailySummary?.highRiskAlerts || 0}
-            </span>
-            <span className={styles.statLabel}>High-Risk Alerts</span>
-          </div>
-        </Card>
-        <Card className={styles.statCard}>
-          <div className={styles.statIcon}>🎯</div>
-          <div className={styles.statInfo}>
-            <span className={styles.statValue}>
-              {data?.dailySummary?.avgConfidence ? (data.dailySummary.avgConfidence * 100).toFixed(0) : 85}%
-            </span>
-            <span className={styles.statLabel}>Avg Confidence</span>
-          </div>
-        </Card>
       </div>
 
       {/* Recording History */}
@@ -1030,6 +1113,19 @@ export default function InsightsPage() {
               >
                 Transcript
               </button>
+              <button
+                className={`${styles.tabBtn} ${activeTab === 'themes' ? styles.activeTab : ''}`}
+                onClick={() => {
+                  setActiveTab('themes')
+                  // Fetch theme summaries when themes tab is clicked
+                  const themes = selectedRecord.themes || (selectedRecord.theme ? selectedRecord.theme.split(',').map(t => t.trim()) : [])
+                  if (themes.length > 0 && selectedRecord.transcript) {
+                    fetchThemeSummaries(themes, selectedRecord.transcript)
+                  }
+                }}
+              >
+                Themes
+              </button>
             </div>
 
             <div className={styles.modalBody}>
@@ -1074,7 +1170,7 @@ export default function InsightsPage() {
                   </div>
 
                 </div>
-              ) : (
+              ) : activeTab === 'transcript' ? (
                 <div className={styles.transcriptView}>
                   <div className={styles.aiSummaryBox}>
                     <h3>AI Summary</h3>
@@ -1085,7 +1181,79 @@ export default function InsightsPage() {
                     <p>"{selectedRecord.transcript}"</p>
                   </div>
                 </div>
-              )}
+              ) : activeTab === 'themes' ? (
+                <div className={styles.themesView}>
+                  <h3 style={{ color: '#fff', marginBottom: '20px', fontSize: '1.2rem' }}>Theme-wise Analysis</h3>
+                  {(() => {
+                    const themes = selectedRecord.themes || (selectedRecord.theme ? selectedRecord.theme.split(',').map(t => t.trim()) : [])
+                    
+                    if (themes.length === 0) {
+                      return (
+                        <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.5)' }}>
+                          <p>No themes found for this record.</p>
+                        </div>
+                      )
+                    }
+
+                    if (loadingThemes) {
+                      return (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>
+                          <div className={styles.loadingSpinner} style={{ margin: '0 auto' }}></div>
+                          <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: '16px' }}>Generating theme summaries...</p>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <div className={styles.themesList}>
+                        {themes.map((theme, idx) => (
+                          <div key={idx} className={styles.themeSummaryCard}>
+                            <div className={styles.themeSummaryHeader}>
+                              <span className={styles.themeBadge}>{theme}</span>
+                            </div>
+                            <div className={styles.themeSummaryContent}>
+                              <h4 style={{ color: '#fff', marginBottom: '12px', fontSize: '1rem' }}>AI Summary for {theme}</h4>
+                              <div style={{ 
+                                color: 'rgba(255,255,255,0.8)', 
+                                lineHeight: '1.8',
+                                fontSize: '0.95rem'
+                              }}>
+                                {themeSummaries[theme] ? (
+                                  <ul style={{ 
+                                    listStyle: 'none', 
+                                    padding: 0, 
+                                    margin: 0,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '10px'
+                                  }}>
+                                    {themeSummaries[theme].split('\n').filter(line => line.trim()).map((point, pointIdx) => {
+                                      // Remove leading "- " if present
+                                      const cleanPoint = point.replace(/^-\s*/, '').trim()
+                                      return cleanPoint ? (
+                                        <li key={pointIdx} style={{ 
+                                          display: 'flex',
+                                          alignItems: 'flex-start',
+                                          gap: '10px'
+                                        }}>
+                                          <span style={{ color: '#4ade80', fontSize: '1.2rem', lineHeight: '1.2', marginTop: '2px' }}>•</span>
+                                          <span style={{ flex: 1 }}>{cleanPoint}</span>
+                                        </li>
+                                      ) : null
+                                    })}
+                                  </ul>
+                                ) : (
+                                  <p style={{ color: 'rgba(255,255,255,0.5)' }}>Loading summary...</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

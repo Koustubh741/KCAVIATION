@@ -125,7 +125,8 @@ class AnalysisService:
             transcription, 
             detected_airlines, 
             detected_themes,
-            primary_airline
+            primary_airline,
+            theme_filter=theme_filter
         )
         
         try:
@@ -153,7 +154,8 @@ class AnalysisService:
                 transcription,
                 detected_airlines,
                 detected_themes,
-                primary_airline
+                primary_airline,
+                theme_filter=theme_filter
             )
             
             # Add news correlation if enabled
@@ -193,7 +195,8 @@ class AnalysisService:
         transcription: str,
         airlines: List[Dict],
         themes: List[str],
-        primary_airline: Optional[Dict] = None
+        primary_airline: Optional[Dict] = None,
+        theme_filter: Optional[str] = None
     ) -> str:
         """Build prompt for AI analysis."""
         airline_names = ', '.join([a['airline'] for a in airlines[:3]]) if airlines else 'None detected'
@@ -204,6 +207,36 @@ class AnalysisService:
         if primary_airline and len(airlines) > 1:
             primary_context = f" Primary focus: {primary_airline.get('airline', 'Unknown')} (most relevant)."
         
+        # If theme_filter is provided, create a focused bullet-point summary prompt
+        if theme_filter:
+            prompt = f"""Analyze this aviation market intelligence transcription and extract ONLY information related to the theme "{theme_filter}".
+
+TRANSCRIPTION: "{transcription}"
+
+CONTEXT: 
+- Airlines mentioned: {airline_names}.{primary_context}
+- Focus Theme: {theme_filter}
+
+REQUIREMENTS:
+Provide a CONCISE, PRECISE summary focused ONLY on "{theme_filter}" from the transcription.
+
+OUTPUT FORMAT (exactly as shown):
+SUMMARY: 
+- [First key point about {theme_filter} - one sentence, specific and factual]
+- [Second key point about {theme_filter} - one sentence, specific and factual]
+- [Third key point about {theme_filter} - one sentence, specific and factual]
+- [Additional points as needed - maximum 5 bullet points total]
+
+IMPORTANT:
+- Each bullet point must be ONE sentence only
+- Be specific and factual - include numbers, dates, names if mentioned
+- Focus ONLY on {theme_filter} - ignore other themes
+- Maximum 5 bullet points
+- Each point should be independent and informative
+- Use clear, concise language"""
+            return prompt
+        
+        # Original comprehensive analysis prompt
         prompt = f"""Analyze this aviation market intelligence transcription and provide a comprehensive analysis:
 
 TRANSCRIPTION: "{transcription}"
@@ -367,11 +400,12 @@ Respond with ONLY the airline name that is the primary subject of this text. If 
         transcription: str,
         airlines: List[Dict],
         themes: List[str],
-        primary_airline: Optional[Dict] = None
+        primary_airline: Optional[Dict] = None,
+        theme_filter: Optional[str] = None
     ) -> Dict[str, Any]:
         """Parse AI response into structured format."""
         # Extract and clean summary
-        summary = self._extract_summary(ai_response, transcription)
+        summary = self._extract_summary(ai_response, transcription, theme_filter=theme_filter)
         
         # Extract keywords (look for keyword section)
         keywords = self._extract_keywords(ai_response, transcription)
@@ -525,7 +559,7 @@ Return airline names only. If no airlines are mentioned, return nothing (empty r
             "correlation": None  # Will be populated by _add_news_correlation
         }
     
-    def _extract_summary(self, ai_response: str, transcription: str) -> str:
+    def _extract_summary(self, ai_response: str, transcription: str, theme_filter: Optional[str] = None) -> str:
         """Extract and clean summary from AI response."""
         import re
         
@@ -557,6 +591,33 @@ Return airline names only. If no airlines are mentioned, return nothing (empty r
         text = re.sub(r'\{[^}]*"summary"[^}]*:\s*"?', '', text, flags=re.IGNORECASE)
         text = re.sub(r'^["\']|["\']$', '', text)  # Remove surrounding quotes
         
+        # If theme_filter is provided, extract bullet points format
+        if theme_filter:
+            # Look for "SUMMARY:" section and extract bullet points
+            summary_match = re.search(
+                r'SUMMARY:\s*(.+?)(?=\n(?:MARKET SIGNALS|KEYWORDS)|$)',
+                text,
+                re.IGNORECASE | re.DOTALL
+            )
+            if summary_match:
+                summary_text = summary_match.group(1).strip()
+                # Extract bullet points (lines starting with -)
+                bullet_points = []
+                for line in summary_text.split('\n'):
+                    line = line.strip()
+                    if line.startswith('-') or line.startswith('•'):
+                        # Remove the bullet marker and clean up
+                        point = line.lstrip('- •').strip()
+                        if point:
+                            bullet_points.append(point)
+                
+                # If we found bullet points, return them joined with newlines
+                if bullet_points:
+                    return '\n'.join(['- ' + point for point in bullet_points])
+                # Fallback: return the summary text as-is if no bullet points found
+                return summary_text
+        
+        # Original summary extraction for comprehensive analysis
         # Look for "SUMMARY:" section and extract everything until MARKET SIGNALS or KEYWORDS
         summary_match = re.search(
             r'SUMMARY:\s*(.+?)(?=\n(?:MARKET SIGNALS|KEYWORDS)|$)',
